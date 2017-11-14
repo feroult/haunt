@@ -1,0 +1,16 @@
+name: haunt
+description: Haunt Flame Game
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flame:
+      path: ../flame
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: false
