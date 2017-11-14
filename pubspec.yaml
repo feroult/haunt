@@ -13,4 +13,12 @@ dev_dependencies:
     sdk: flutter
 
 flutter:
-  uses-material-design: false
+  assets:
+    - assets/images/layers/layer_01_1920x1080.png
+    - assets/images/layers/layer_02_1920x1080.png
+    - assets/images/layers/layer_03_1920x1080.png
+    - assets/images/layers/layer_04_1920x1080.png
+    - assets/images/layers/layer_05_1920x1080.png
+    - assets/images/layers/layer_06_1920x1080.png
+    - assets/images/layers/layer_07_1920x1080.png
+

@@ -4,6 +4,7 @@ import 'haunt-game.dart';
 
 main() async {
   Flame.util.enableEvents();
+  Flame.util.fullScreen();
   Flame.audio.disableLog();
 
   var dimensions = await Flame.util.initialDimensions();

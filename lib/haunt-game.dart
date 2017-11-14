@@ -6,16 +6,22 @@ import 'package:flame/game.dart';
 class HauntGame extends Game {
   Size dimensions;
 
-  Layer layer1;
+  var layers = new List<Layer>();
+
+  var loaded = false;
 
   HauntGame(this.dimensions) {
-    this.layer1 = new Layer(dimensions);
+    for (var i = 7; i >= 1; i--) {
+      layers.add(new Layer("layers/layer_0${i}_1920x1080.png", dimensions));
+    }
+    loaded = true;
   }
 
   @override
   void render(Canvas canvas) {
-    canvas.save();
-    layer1.render(canvas);
+    layers.forEach((layer) {
+      layer.render(canvas);
+    });
   }
 
   @override
@@ -23,11 +29,10 @@ class HauntGame extends Game {
 }
 
 class Layer extends SpriteComponent {
-  double maxY;
-
-  Layer(Size dimensions)
-      : super.rectangle(dimensions.width, dimensions.height,
-            'layers/layer_01_1920x1080.png') {
+  Layer(String uri, Size dimensions)
+      : super.rectangle(dimensions.width, dimensions.height, uri) {
+    this.x = 0.0;
+    this.y = 0.0;
     this.angle = 0.0;
   }
 
