@@ -1,18 +1,34 @@
 import 'dart:ui';
 
+import 'package:flame/component.dart';
 import 'package:flame/game.dart';
 
 class HauntGame extends Game {
   Size dimensions;
 
-  HauntGame(this.dimensions);
+  Layer layer1;
+
+  HauntGame(this.dimensions) {
+    this.layer1 = new Layer(dimensions);
+  }
 
   @override
   void render(Canvas canvas) {
     canvas.save();
-    var paint = new Paint()..color = new Color(0xffffffff);
-    var offset = this.dimensions.center(new Offset(0.0, 0.0));
-    canvas.drawCircle(offset, 100.0, paint);
+    layer1.render(canvas);
+  }
+
+  @override
+  void update(double t) {}
+}
+
+class Layer extends SpriteComponent {
+  double maxY;
+
+  Layer(Size dimensions)
+      : super.rectangle(dimensions.width, dimensions.height,
+            'layers/layer_01_1920x1080.png') {
+    this.angle = 0.0;
   }
 
   @override
