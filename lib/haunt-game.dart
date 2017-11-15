@@ -33,10 +33,9 @@ class HauntGame extends Game {
 
 class ParallaxComponent extends PositionComponent {
   List<Image> images = new List();
+  List<double> scrolls = new List();
   Size size;
   bool loaded = false;
-  double scroll = 0.0;
-  double lastUpdate;
 
   ParallaxComponent(this.size, List<String> filenames) {
     _load(filenames);
@@ -47,6 +46,7 @@ class ParallaxComponent extends PositionComponent {
         filenames.fold(new List<Future>(), (List<Future> result, filename) {
       result.add(Flame.images.load(filename).then((image) {
         images.add(image);
+        scrolls.add(0.0);
       }));
       return result;
     });
@@ -66,12 +66,14 @@ class ParallaxComponent extends PositionComponent {
   }
 
   void _drawLayers(Canvas canvas) {
-    Rect leftRect =
-        new Rect.fromLTWH(0.0, 0.0, (1 - scroll) * size.width, size.height);
-    Rect rightRect = new Rect.fromLTWH(
-        (1 - scroll) * size.width, 0.0, scroll * size.width, size.height);
+    images.asMap().forEach((index, image) {
+      var scroll = scrolls[index];
 
-    images.forEach((image) {
+      Rect leftRect =
+          new Rect.fromLTWH(0.0, 0.0, (1 - scroll) * size.width, size.height);
+      Rect rightRect = new Rect.fromLTWH(
+          (1 - scroll) * size.width, 0.0, scroll * size.width, size.height);
+
       paintImage(
           canvas: canvas,
           image: image,
@@ -93,9 +95,13 @@ class ParallaxComponent extends PositionComponent {
     if (!loaded) {
       return;
     }
-    scroll += 100 * delta / size.width;
-    if (scroll > 1) {
-      scroll = scroll % 1;
+    for (var i = 0; i < scrolls.length; i++) {
+      var scroll = scrolls[i];
+      scroll += (100 + i * 20) * delta / size.width;
+      if (scroll > 1) {
+        scroll = scroll % 1;
+      }
+      scrolls[i] = scroll;
     }
   }
 }
