@@ -26,15 +26,19 @@ class HauntGame extends Game {
   }
 
   @override
-  void update(double t) {}
+  void update(double t) {
+    background.update(t);
+  }
 }
 
 class ParallaxComponent extends PositionComponent {
   List<Image> images = new List();
+  Size size;
   bool loaded = false;
-  Size dimensions;
+  double scroll = 0.0;
+  double lastUpdate;
 
-  ParallaxComponent(this.dimensions, List<String> filenames) {
+  ParallaxComponent(this.size, List<String> filenames) {
     _load(filenames);
   }
 
@@ -56,17 +60,42 @@ class ParallaxComponent extends PositionComponent {
     if (!loaded) {
       return;
     }
+
+    prepareCanvas(canvas);
+    _drawLayers(canvas);
+  }
+
+  void _drawLayers(Canvas canvas) {
+    Rect leftRect =
+        new Rect.fromLTWH(0.0, 0.0, (1 - scroll) * size.width, size.height);
+    Rect rightRect = new Rect.fromLTWH(
+        (1 - scroll) * size.width, 0.0, scroll * size.width, size.height);
+
     images.forEach((image) {
-      final Rect rect =
-          new Rect.fromLTWH(0.0, 0.0, dimensions.width, dimensions.height);
-      canvas.translate(x, y);
-      canvas.rotate(angle); // TODO: rotate around center
-      paintImage(canvas: canvas, image: image, rect: rect, fit: BoxFit.cover);
+      paintImage(
+          canvas: canvas,
+          image: image,
+          rect: leftRect,
+          fit: BoxFit.cover,
+          alignment: Alignment.centerRight);
+
+      paintImage(
+          canvas: canvas,
+          image: image,
+          rect: rightRect,
+          fit: BoxFit.cover,
+          alignment: Alignment.centerLeft);
     });
   }
 
   @override
-  void update(double t) {
-    // TODO: implement update
+  void update(double delta) {
+    if (!loaded) {
+      return;
+    }
+    scroll += 100 * delta / size.width;
+    if (scroll > 1) {
+      scroll = scroll % 1;
+    }
   }
 }
