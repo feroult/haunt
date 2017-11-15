@@ -14,11 +14,25 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/images/layers/layer_01_1920x1080.png
-    - assets/images/layers/layer_02_1920x1080.png
-    - assets/images/layers/layer_03_1920x1080.png
-    - assets/images/layers/layer_04_1920x1080.png
-    - assets/images/layers/layer_05_1920x1080.png
-    - assets/images/layers/layer_06_1920x1080.png
-    - assets/images/layers/layer_07_1920x1080.png
+    - assets/images/layers/layer_01.png
+    - assets/images/layers/layer_02.png
+    - assets/images/layers/layer_03.png
+    - assets/images/layers/layer_04.png
+    - assets/images/layers/layer_05.png
+    - assets/images/layers/layer_06.png
+    - assets/images/layers/layer_07.png
 
+analyzer:
+  strong-mode: true
+
+# Source of linter options:
+# http://dart-lang.github.io/linter/lints/options/options.html
+
+linter:
+  rules:
+    - camel_case_types
+    - hash_and_equals
+    - iterable_contains_unrelated_type
+    - list_remove_unrelated_type
+    - unrelated_type_equality_checks
+    - valid_regexps
