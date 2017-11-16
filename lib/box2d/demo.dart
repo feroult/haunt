@@ -44,41 +44,26 @@ abstract class Demo {
   static const double GRAVITY = -10.0;
 
   /** The timestep and iteration numbers. */
-  static const num TIME_STEP = 1 / 60;
   static const int VELOCITY_ITERATIONS = 10;
   static const int POSITION_ITERATIONS = 10;
 
   /** The physics world. */
   World world;
 
-  // For timing the world.step call. It is kept running but reset and polled
-  // every frame to minimize overhead.
-  Stopwatch _stopwatch;
-
-  /** The transform abstraction layer between the world and drawing canvas. */
-  ViewportTransform viewport;
-
   /** The debug drawing tool. */
   CanvasDraw debugDraw;
-
-  /** Microseconds for world step update */
-  int elapsedUs;
 
   Demo(String name) {
     this.world = new World.withPool(new Vector2(0.0, GRAVITY),
         new DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE));
-    this._stopwatch = new Stopwatch()..start();
+  }
+
+  void update(t) {
+    world.stepDt(t, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
   }
 
   void render(canvas) {
     debugDraw.canvas = canvas;
-
-    _stopwatch.reset();
-    world.stepDt(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-    elapsedUs = _stopwatch.elapsedMicroseconds;
-
-    // Clear the animation panel and draw new frame.
-    // ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     world.drawDebugData();
   }
 
@@ -88,7 +73,7 @@ abstract class Demo {
    */
   void initializeAnimation(Size dimensions) {
     var extents = new Vector2(dimensions.width / 2, dimensions.height / 2);
-    viewport = new ViewportTransform(extents, extents, 15.0);
+    var viewport = new ViewportTransform(extents, extents, 15.0);
 
     // Create our canvas drawing tool to give to the world.
     debugDraw = new CanvasDraw(viewport);

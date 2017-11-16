@@ -41,6 +41,9 @@ class HauntGame extends Game {
 
   @override
   void render(Canvas canvas) {
+    if (!background.loaded) {
+      return;
+    }
     background.render(canvas);
 //    dominoTest.render(canvas);
     ballCage.render(canvas);
@@ -48,6 +51,11 @@ class HauntGame extends Game {
 
   @override
   void update(double t) {
+    if (!background.loaded) {
+      return;
+    }
+
     background.update(t);
+    ballCage.update(t);
   }
 }
