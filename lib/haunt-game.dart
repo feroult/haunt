@@ -23,6 +23,11 @@ class HauntGame extends Game {
     dominoTest = createDomino();
     ballCage = createBallCage();
     background = new ParallaxComponent(dimensions, filenames);
+
+    window.onPointerDataPacket = (packet) {
+      var pointer = packet.data.first;
+      input(pointer.physicalX, pointer.physicalY);
+    };
   }
 
   DominoTest createDomino() {
@@ -37,6 +42,10 @@ class HauntGame extends Game {
     demo.initialize();
     demo.initializeAnimation(dimensions);
     return demo;
+  }
+
+  void input(double x, double y) {
+    ballCage.input(x, y);
   }
 
   @override

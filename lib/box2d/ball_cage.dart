@@ -28,6 +28,8 @@ import 'package:box2d/box2d.dart';
 import 'package:haunt/box2d/demo.dart';
 
 class BallCage extends Demo {
+  Body ball;
+
   /** Starting position of ball cage in the world. */
   static const double START_X = -20.0;
   static const double START_Y = -20.0;
@@ -102,8 +104,13 @@ class BallCage extends Demo {
     activeBodyDef.position = new Vector2(15.0, 15.0);
     activeBodyDef.type = BodyType.DYNAMIC;
     activeBodyDef.bullet = true;
-    final activeBody = world.createBody(activeBodyDef);
-    bodies.add(activeBody);
-    activeBody.createFixtureFromFixtureDef(activeFixtureDef);
+    ball = world.createBody(activeBodyDef);
+    bodies.add(ball);
+    ball.createFixtureFromFixtureDef(activeFixtureDef);
+  }
+
+  void input(double x, double y) {
+    Vector2 currentForwardNormal = ball.getWorldVector(new Vector2(0.0, 5.0));
+    ball.applyForce(currentForwardNormal..scale(1000.0), ball.worldCenter);
   }
 }
