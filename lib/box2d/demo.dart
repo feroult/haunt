@@ -32,7 +32,7 @@ abstract class Box2DComponent extends Component {
         new DefaultWorldPool(worldPoolSize, worldPoolContainerSize));
 
     var extents = new Vector2(dimensions.width / 2, dimensions.height / 2);
-    this.viewport = new ViewportTransform(extents, extents, 15.0);
+    this.viewport = new ViewportTransform(extents, extents, 20.0);
   }
 
   @override
@@ -62,37 +62,38 @@ class BodyComponent {
   BodyRenderer renderer;
 
   BodyComponent(this.body, {BodyRenderer renderer}) {
-    this.renderer = renderer != null ? render : new DefaultBodyRenderer();
+    this.renderer = renderer != null ? renderer : new DefaultBodyRenderer();
   }
 
   void render(Canvas canvas, ViewportTransform viewport) {
-    renderer.render(body, canvas, viewport);
+    body.getFixtureList();
+    for (Fixture fixture = body.getFixtureList();
+        fixture != null;
+        fixture = fixture.getNext()) {
+      renderer.render(body, fixture, canvas, viewport);
+    }
   }
 }
 
 class DefaultBodyRenderer extends BodyRenderer {
   @override
-  void render(Body body, Canvas canvas, ViewportTransform viewport) {
-    body.getFixtureList();
-    for (Fixture fixture = body.getFixtureList();
-        fixture != null;
-        fixture = fixture.getNext()) {
-      switch (fixture.getType()) {
-        case ShapeType.CHAIN:
-          break;
-        case ShapeType.CIRCLE:
-          _renderCircle(body, canvas, viewport, fixture);
-          break;
-        case ShapeType.EDGE:
-          break;
-        case ShapeType.POLYGON:
-          break;
-      }
+  void render(
+      Body body, Fixture fixture, Canvas canvas, ViewportTransform viewport) {
+    switch (fixture.getType()) {
+      case ShapeType.CHAIN:
+        break;
+      case ShapeType.CIRCLE:
+        _renderCircle(body, fixture, canvas, viewport);
+        break;
+      case ShapeType.EDGE:
+        break;
+      case ShapeType.POLYGON:
+        break;
     }
   }
 
   void _renderCircle(
-      Body body, Canvas canvas, ViewportTransform viewport, Fixture fixture) {
+      Body body, Fixture fixture, Canvas canvas, ViewportTransform viewport) {
     final Paint paint = new Paint()
       ..color = new Color.fromARGB(255, 255, 255, 255);
     Vector2 center = new Vector2.zero();
@@ -105,5 +106,6 @@ class DefaultBodyRenderer extends BodyRenderer {
 }
 
 abstract class BodyRenderer {
-  void render(Body body, Canvas canvas, ViewportTransform viewport);
+  void render(
+      Body body, Fixture fixture, Canvas canvas, ViewportTransform viewport);
 }
