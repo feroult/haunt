@@ -1,86 +1,109 @@
-/*******************************************************************************
- * Copyright (c) 2015, Daniel Murphy, Google
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- ******************************************************************************/
-
-library demo;
-
 import 'dart:ui';
 
 import 'package:box2d/box2d.dart' hide Timer;
+import 'package:flame/component.dart';
 
-import 'canvas_draw.dart';
+abstract class Box2DComponent extends Component {
+  static const int DEFAULT_WORLD_POOL_SIZE = 100;
+  static const int DEFAULT_WORLD_POOL_CONTAINER_SIZE = 10;
+  static const double DEFAULT_GRAVITY = -10.0;
+  static const int DEFAULT_VELOCITY_ITERATIONS = 10;
+  static const int DEFAULT_POSITION_ITERATIONS = 10;
 
-/**
- * An abstract class for any Demo of the Box2D library.
- */
-abstract class Demo {
-  static const int WORLD_POOL_SIZE = 100;
-  static const int WORLD_POOL_CONTAINER_SIZE = 10;
+  Size dimensions;
+  int velocityIterations;
+  int positionIterations;
 
-  /** All of the bodies in a simulation. */
-  List<Body> bodies = new List<Body>();
-
-  /** The gravity vector's y value. */
-  static const double GRAVITY = -10.0;
-
-  /** The timestep and iteration numbers. */
-  static const int VELOCITY_ITERATIONS = 10;
-  static const int POSITION_ITERATIONS = 10;
-
-  /** The physics world. */
   World world;
+  List<BodyComponent> bodies = new List();
 
-  /** The debug drawing tool. */
-  CanvasDraw debugDraw;
+  ViewportTransform viewport;
 
-  Demo(String name) {
-    this.world = new World.withPool(new Vector2(0.0, GRAVITY),
-        new DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE));
-  }
+  Box2DComponent(this.dimensions,
+      {int worldPoolSize: DEFAULT_WORLD_POOL_SIZE,
+      int worldPoolContainerSize: DEFAULT_WORLD_POOL_CONTAINER_SIZE,
+      double gravity: DEFAULT_GRAVITY,
+      velocityIterations: DEFAULT_VELOCITY_ITERATIONS,
+      int positionIterations: DEFAULT_POSITION_ITERATIONS}) {
+    this.velocityIterations = velocityIterations;
+    this.positionIterations = positionIterations;
 
-  void update(t) {
-    world.stepDt(t, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-  }
+    this.world = new World.withPool(new Vector2(0.0, gravity),
+        new DefaultWorldPool(worldPoolSize, worldPoolContainerSize));
 
-  void render(canvas) {
-    debugDraw.canvas = canvas;
-    world.drawDebugData();
-  }
-
-  /**
-   * Creates the canvas and readies the demo for animation. Must be called
-   * before calling runAnimation.
-   */
-  void initializeAnimation(Size dimensions) {
     var extents = new Vector2(dimensions.width / 2, dimensions.height / 2);
-    var viewport = new ViewportTransform(extents, extents, 15.0);
+    this.viewport = new ViewportTransform(extents, extents, 15.0);
+  }
 
-    // Create our canvas drawing tool to give to the world.
-    debugDraw = new CanvasDraw(viewport);
+  @override
+  void update(t) {
+    world.stepDt(t, velocityIterations, positionIterations);
+  }
 
-    // Have the world draw itself for debugging purposes.
-    world.debugDraw = debugDraw;
+  @override
+  void render(canvas) {
+    bodies.forEach((body) {
+      body.render(canvas, viewport);
+    });
+  }
+
+  Body createBody(BodyDef def, {BodyRenderer renderer}) {
+    var body = world.createBody(def);
+    bodies.add(new BodyComponent(body, renderer: renderer));
+    return body;
   }
 
   void initialize();
+}
+
+class BodyComponent {
+  Body body;
+
+  BodyRenderer renderer;
+
+  BodyComponent(this.body, {BodyRenderer renderer}) {
+    this.renderer = renderer != null ? render : new DefaultBodyRenderer();
+  }
+
+  void render(Canvas canvas, ViewportTransform viewport) {
+    renderer.render(body, canvas, viewport);
+  }
+}
+
+class DefaultBodyRenderer extends BodyRenderer {
+  @override
+  void render(Body body, Canvas canvas, ViewportTransform viewport) {
+    body.getFixtureList();
+    for (Fixture fixture = body.getFixtureList();
+        fixture != null;
+        fixture = fixture.getNext()) {
+      switch (fixture.getType()) {
+        case ShapeType.CHAIN:
+          break;
+        case ShapeType.CIRCLE:
+          _renderCircle(body, canvas, viewport, fixture);
+          break;
+        case ShapeType.EDGE:
+          break;
+        case ShapeType.POLYGON:
+          break;
+      }
+    }
+  }
+
+  void _renderCircle(
+      Body body, Canvas canvas, ViewportTransform viewport, Fixture fixture) {
+    final Paint paint = new Paint()
+      ..color = new Color.fromARGB(255, 255, 255, 255);
+    Vector2 center = new Vector2.zero();
+    CircleShape circle = fixture.getShape();
+    body.getWorldPointToOut(circle.p, center);
+    viewport.getWorldToScreen(center, center);
+    canvas.drawCircle(
+        new Offset(center.x, center.y), circle.radius * viewport.scale, paint);
+  }
+}
+
+abstract class BodyRenderer {
+  void render(Body body, Canvas canvas, ViewportTransform viewport);
 }

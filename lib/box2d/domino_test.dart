@@ -24,13 +24,15 @@
 
 library DominoTest;
 
+import 'dart:ui';
+
 import 'package:box2d/box2d.dart';
 
 import 'demo.dart';
 
 /** Demonstration of dominoes being knocked over. */
-class DominoTest extends Demo {
-  DominoTest() : super("Domino test");
+class DominoTest extends Box2DComponent {
+  DominoTest(Size dimensions) : super(dimensions);
 
   void initialize() {
     {
@@ -42,9 +44,8 @@ class DominoTest extends Demo {
 
       BodyDef bd = new BodyDef();
       bd.position = new Vector2(0.0, -10.0);
-      final body = world.createBody(bd);
+      final body = createBody(bd);
       body.createFixtureFromFixtureDef(fd);
-      bodies.add(body);
     }
 
     {
@@ -57,9 +58,8 @@ class DominoTest extends Demo {
 
         BodyDef bd = new BodyDef();
         bd.position = new Vector2(0.0, 5.0 + 5 * i);
-        final body = world.createBody(bd);
+        final body = createBody(bd);
         body.createFixtureFromFixtureDef(fd);
-        bodies.add(body);
       }
     }
 
@@ -91,12 +91,10 @@ class DominoTest extends Demo {
           } else {
             bd.angle = 0.0;
           }
-          Body myBody = world.createBody(bd);
+          Body myBody = createBody(bd);
           myBody.createFixtureFromFixtureDef(fd);
-          bodies.add(myBody);
         }
       }
     }
   }
 }
-

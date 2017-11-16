@@ -20,8 +20,8 @@ class HauntGame extends Game {
       filenames.add("layers/layer_0${i}.png");
     }
 
-    dominoTest = createDomino();
-    ballCage = createBallCage();
+    dominoTest = createDomino(dimensions);
+    ballCage = createBallCage(dimensions);
     background = new ParallaxComponent(dimensions, filenames);
 
     window.onPointerDataPacket = (packet) {
@@ -30,17 +30,15 @@ class HauntGame extends Game {
     };
   }
 
-  DominoTest createDomino() {
-    var demo = new DominoTest();
+  DominoTest createDomino(Size dimensions) {
+    var demo = new DominoTest(dimensions);
     demo.initialize();
-    demo.initializeAnimation(dimensions);
     return demo;
   }
 
-  BallCage createBallCage() {
-    var demo = new BallCage();
+  BallCage createBallCage(Size dimensions) {
+    var demo = new BallCage(dimensions);
     demo.initialize();
-    demo.initializeAnimation(dimensions);
     return demo;
   }
 
@@ -54,8 +52,8 @@ class HauntGame extends Game {
       return;
     }
     background.render(canvas);
-//    dominoTest.render(canvas);
     ballCage.render(canvas);
+//    dominoTest.render(canvas);
   }
 
   @override
@@ -66,5 +64,6 @@ class HauntGame extends Game {
 
     background.update(t);
     ballCage.update(t);
+//    dominoTest.update(t);
   }
 }
