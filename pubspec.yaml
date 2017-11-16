@@ -4,6 +4,7 @@ description: Haunt Flame Game
 dependencies:
   flutter:
     sdk: flutter
+  box2d:
 
   flame:
       path: ../flame
