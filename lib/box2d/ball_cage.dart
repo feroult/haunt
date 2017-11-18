@@ -8,21 +8,40 @@ import 'custom_shape.dart';
 import 'demo.dart';
 
 class BallCage extends Box2DComponent {
-  Body ball;
+  Body ninja;
 
   /** Starting position of ball cage in the world. */
   static const double START_X = -20.0;
   static const double START_Y = -20.0;
 
-  /** The radius of the balls forming the arena. */
   static const num WALL_BALL_RADIUS = 2.0;
-
-  /** Radius of the active ball. */
   static const num ACTIVE_BALL_RADIUS = 5.0;
 
   BallCage(Size dimensions) : super(dimensions);
 
-  void initialize() {
+  void initializeWorld() {
+    createGround();
+//    createWalls();
+    createNinja();
+  }
+
+  void createGround() {
+    final shape = new PolygonShape();
+//    shape.radius = 2.0;
+    shape.setAsBoxXY(dimensions.width / 2 / viewport.scale, 10.0);
+    final fixtureDef = new FixtureDef();
+    fixtureDef.shape = shape;
+    fixtureDef.friction = 1.0;
+    fixtureDef.restitution = 0.0;
+    final bodyDef = new BodyDef();
+//    bodyDef.position = new Vector2(dimensions.width / 2, dimensions.height / 2);
+    bodyDef.position =
+        new Vector2(0.0, -(dimensions.height / 2 / viewport.scale) + 10);
+    Body groundBody = createBody(bodyDef);
+    groundBody.createFixtureFromFixtureDef(fixtureDef);
+  }
+
+  void createWalls() {
     // Define the circle shape.
     final circleShape = new CircleShape();
     circleShape.radius = WALL_BALL_RADIUS;
@@ -61,7 +80,9 @@ class BallCage extends Box2DComponent {
       circleBody = createBody(circleBodyDef);
       circleBody.createFixtureFromFixtureDef(circleFixtureDef);
     }
+  }
 
+  void createNinja() {
     // Create a bouncing ball.
     final bouncingCircle = new CustomShape();
     bouncingCircle.radius = ACTIVE_BALL_RADIUS;
@@ -69,7 +90,7 @@ class BallCage extends Box2DComponent {
 
     // Create fixture for that ball shape.
     final activeFixtureDef = new FixtureDef();
-    activeFixtureDef.restitution = 1.0;
+    activeFixtureDef.restitution = 0.0;
     activeFixtureDef.density = 0.05;
     activeFixtureDef.shape = bouncingCircle;
 
@@ -79,13 +100,13 @@ class BallCage extends Box2DComponent {
     activeBodyDef.position = new Vector2(15.0, 15.0);
     activeBodyDef.type = BodyType.DYNAMIC;
     activeBodyDef.bullet = true;
-    ball = createBody(activeBodyDef, component: new NinjaComponent());
-    ball.createFixtureFromFixtureDef(activeFixtureDef);
+    ninja = createBody(activeBodyDef, component: new NinjaComponent());
+    ninja.createFixtureFromFixtureDef(activeFixtureDef);
   }
 
   void input(double x, double y) {
     Vector2 currentForwardNormal = new Vector2(0.0, 5.0);
-    ball.applyForce(currentForwardNormal..scale(1000.0), ball.worldCenter);
+    ninja.applyForce(currentForwardNormal..scale(100.0), ninja.worldCenter);
   }
 }
 

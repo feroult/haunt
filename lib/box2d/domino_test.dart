@@ -34,7 +34,7 @@ import 'demo.dart';
 class DominoTest extends Box2DComponent {
   DominoTest(Size dimensions) : super(dimensions);
 
-  void initialize() {
+  void initializeWorld() {
     {
       // Floor
       FixtureDef fd = new FixtureDef();

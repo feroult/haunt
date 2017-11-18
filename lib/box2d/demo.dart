@@ -9,6 +9,7 @@ abstract class Box2DComponent extends Component {
   static const double DEFAULT_GRAVITY = -10.0;
   static const int DEFAULT_VELOCITY_ITERATIONS = 10;
   static const int DEFAULT_POSITION_ITERATIONS = 10;
+  static const double DEFAULT_SCALE = 20.0;
 
   Size dimensions;
   int velocityIterations;
@@ -24,7 +25,8 @@ abstract class Box2DComponent extends Component {
       int worldPoolContainerSize: DEFAULT_WORLD_POOL_CONTAINER_SIZE,
       double gravity: DEFAULT_GRAVITY,
       velocityIterations: DEFAULT_VELOCITY_ITERATIONS,
-      int positionIterations: DEFAULT_POSITION_ITERATIONS}) {
+      int positionIterations: DEFAULT_POSITION_ITERATIONS,
+      double scale: DEFAULT_SCALE}) {
     this.velocityIterations = velocityIterations;
     this.positionIterations = positionIterations;
 
@@ -32,7 +34,7 @@ abstract class Box2DComponent extends Component {
         new DefaultWorldPool(worldPoolSize, worldPoolContainerSize));
 
     var extents = new Vector2(dimensions.width / 2, dimensions.height / 2);
-    this.viewport = new ViewportTransform(extents, extents, 20.0);
+    this.viewport = new ViewportTransform(extents, extents, scale);
   }
 
   @override
@@ -61,17 +63,19 @@ abstract class Box2DComponent extends Component {
     return body;
   }
 
-  void initialize();
+  void initializeWorld();
 }
 
 class BodyComponent extends Component {
+  static const MAX_POLYGON_VERTICES = 10;
+
   Body body;
 
   ViewportTransform viewport;
 
   @override
   void update(double t) {
-    // TODO: implement update
+    // usually all update will be handled by the world physics
   }
 
   @override
@@ -91,6 +95,7 @@ class BodyComponent extends Component {
           throw new Exception("not implemented");
           break;
         case ShapeType.POLYGON:
+          _renderPolygon(canvas, fixture);
           break;
       }
     }
@@ -109,5 +114,31 @@ class BodyComponent extends Component {
     final Paint paint = new Paint()
       ..color = new Color.fromARGB(255, 255, 255, 255);
     canvas.drawCircle(center, radius, paint);
+  }
+
+  void _renderPolygon(Canvas canvas, Fixture fixture) {
+    PolygonShape polygon = fixture.getShape();
+    assert(polygon.count <= MAX_POLYGON_VERTICES);
+    List<Vector2> vertices = new Vec2Array().get(polygon.count);
+
+    for (int i = 0; i < polygon.count; ++i) {
+      body.getWorldPointToOut(polygon.vertices[i], vertices[i]);
+      viewport.getWorldToScreen(vertices[i], vertices[i]);
+    }
+
+    List<Offset> points = new List();
+    for (int i = 0; i < polygon.count; i++) {
+      points.add(new Offset(vertices[i].x, vertices[i].y));
+    }
+
+    drawPolygon(canvas, points);
+  }
+
+  void drawPolygon(Canvas canvas, List<Offset> points) {
+//    print("points: $points");
+    final path = new Path()..addPolygon(points, true);
+    final Paint paint = new Paint()
+      ..color = new Color.fromARGB(255, 255, 255, 255);
+    canvas.drawPath(path, paint);
   }
 }

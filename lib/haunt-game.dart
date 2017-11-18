@@ -32,13 +32,13 @@ class HauntGame extends Game {
 
   DominoTest createDomino(Size dimensions) {
     var demo = new DominoTest(dimensions);
-    demo.initialize();
+    demo.initializeWorld();
     return demo;
   }
 
   BallCage createBallCage(Size dimensions) {
     var demo = new BallCage(dimensions);
-    demo.initialize();
+    demo.initializeWorld();
     return demo;
   }
 
