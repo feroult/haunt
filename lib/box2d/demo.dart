@@ -150,6 +150,6 @@ class BodyComponent extends Component {
     final path = new Path()..addPolygon(points, true);
     final Paint paint = new Paint()
       ..color = new Color.fromARGB(255, 255, 255, 255);
-    canvas.drawPath(path, paint);
+//    canvas.drawPath(path, paint);
   }
 }

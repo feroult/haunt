@@ -11,7 +11,7 @@ class HauntGame extends Game {
 
   ParallaxComponent background;
 
-  BallCage ballCage;
+  NinjaWorld ballCage;
   DominoTest dominoTest;
 
   HauntGame(this.dimensions) {
@@ -36,8 +36,8 @@ class HauntGame extends Game {
     return demo;
   }
 
-  BallCage createBallCage(Size dimensions) {
-    var demo = new BallCage(dimensions);
+  NinjaWorld createBallCage(Size dimensions) {
+    var demo = new NinjaWorld(dimensions);
     demo.initializeWorld();
     return demo;
   }
