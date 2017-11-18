@@ -38,74 +38,76 @@ abstract class Box2DComponent extends Component {
   @override
   void update(t) {
     world.stepDt(t, velocityIterations, positionIterations);
+    bodies.forEach((body) {
+      body.update(t);
+    });
   }
 
   @override
   void render(canvas) {
     bodies.forEach((body) {
-      body.render(canvas, viewport);
+      body.render(canvas);
     });
   }
 
-  Body createBody(BodyDef def, {BodyRenderer renderer}) {
+  Body createBody(BodyDef def, {BodyComponent component}) {
+    if (component == null) {
+      component = new BodyComponent();
+    }
     var body = world.createBody(def);
-    bodies.add(new BodyComponent(body, renderer: renderer));
+    component.viewport = viewport;
+    component.body = body;
+    bodies.add(component);
     return body;
   }
 
   void initialize();
 }
 
-class BodyComponent {
+class BodyComponent extends Component {
   Body body;
 
-  BodyRenderer renderer;
+  ViewportTransform viewport;
 
-  BodyComponent(this.body, {BodyRenderer renderer}) {
-    this.renderer = renderer != null ? renderer : new DefaultBodyRenderer();
+  @override
+  void update(double t) {
+    // TODO: implement update
   }
 
-  void render(Canvas canvas, ViewportTransform viewport) {
+  @override
+  void render(Canvas canvas) {
     body.getFixtureList();
     for (Fixture fixture = body.getFixtureList();
         fixture != null;
         fixture = fixture.getNext()) {
-      renderer.render(body, fixture, canvas, viewport);
-    }
-  }
-}
-
-class DefaultBodyRenderer extends BodyRenderer {
-  @override
-  void render(
-      Body body, Fixture fixture, Canvas canvas, ViewportTransform viewport) {
-    switch (fixture.getType()) {
-      case ShapeType.CHAIN:
-        break;
-      case ShapeType.CIRCLE:
-        _renderCircle(body, fixture, canvas, viewport);
-        break;
-      case ShapeType.EDGE:
-        break;
-      case ShapeType.POLYGON:
-        break;
+      switch (fixture.getType()) {
+        case ShapeType.CHAIN:
+          throw new Exception("not implemented");
+          break;
+        case ShapeType.CIRCLE:
+          _renderCircle(canvas, fixture);
+          break;
+        case ShapeType.EDGE:
+          throw new Exception("not implemented");
+          break;
+        case ShapeType.POLYGON:
+          break;
+      }
     }
   }
 
-  void _renderCircle(
-      Body body, Fixture fixture, Canvas canvas, ViewportTransform viewport) {
-    final Paint paint = new Paint()
-      ..color = new Color.fromARGB(255, 255, 255, 255);
+  void _renderCircle(Canvas canvas, Fixture fixture) {
     Vector2 center = new Vector2.zero();
     CircleShape circle = fixture.getShape();
     body.getWorldPointToOut(circle.p, center);
     viewport.getWorldToScreen(center, center);
-    canvas.drawCircle(
-        new Offset(center.x, center.y), circle.radius * viewport.scale, paint);
+    renderCircle(
+        canvas, new Offset(center.x, center.y), circle.radius * viewport.scale);
   }
-}
 
-abstract class BodyRenderer {
-  void render(
-      Body body, Fixture fixture, Canvas canvas, ViewportTransform viewport);
+  void renderCircle(Canvas canvas, Offset center, double radius) {
+    final Paint paint = new Paint()
+      ..color = new Color.fromARGB(255, 255, 255, 255);
+    canvas.drawCircle(center, radius, paint);
+  }
 }

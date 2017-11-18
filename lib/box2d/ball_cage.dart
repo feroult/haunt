@@ -18,7 +18,7 @@ class BallCage extends Box2DComponent {
   static const num WALL_BALL_RADIUS = 2.0;
 
   /** Radius of the active ball. */
-  static const num ACTIVE_BALL_RADIUS = 4.0;
+  static const num ACTIVE_BALL_RADIUS = 5.0;
 
   BallCage(Size dimensions) : super(dimensions);
 
@@ -79,7 +79,7 @@ class BallCage extends Box2DComponent {
     activeBodyDef.position = new Vector2(15.0, 15.0);
     activeBodyDef.type = BodyType.DYNAMIC;
     activeBodyDef.bullet = true;
-    ball = createBody(activeBodyDef, renderer: new NinjaRenderer());
+    ball = createBody(activeBodyDef, component: new NinjaComponent());
     ball.createFixtureFromFixtureDef(activeFixtureDef);
   }
 
@@ -89,29 +89,24 @@ class BallCage extends Box2DComponent {
   }
 }
 
-class NinjaRenderer extends BodyRenderer {
+class NinjaComponent extends BodyComponent {
   Image image;
 
-  NinjaRenderer() {
+  NinjaComponent() {
     Flame.images.load("ninja.png").then((image) {
       this.image = image;
     });
   }
 
   @override
-  void render(
-      Body body, Fixture fixture, Canvas canvas, ViewportTransform viewport) {
-    Vector2 center = new Vector2.zero();
-    CircleShape circle = fixture.getShape();
-    body.getWorldPointToOut(circle.p, center);
-    viewport.getWorldToScreen(center, center);
-
+  void renderCircle(Canvas canvas, Offset center, double radius) {
+    if (image == null) {
+      return;
+    }
     paintImage(
         canvas: canvas,
         image: image,
-        rect: new Rect.fromCircle(
-            center: new Offset(center.x, center.y),
-            radius: circle.radius * viewport.scale),
+        rect: new Rect.fromCircle(center: center, radius: radius),
         fit: BoxFit.contain);
   }
 }
