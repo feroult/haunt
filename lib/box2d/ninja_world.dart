@@ -20,7 +20,7 @@ class NinjaWorld extends Box2DComponent {
   }
 
   void createGround() {
-    var height = 10.0;
+    var height = 7.5;
     final shape = new PolygonShape();
     shape.setAsBoxXY(viewport.width(100), height);
     final fixtureDef = new FixtureDef();
