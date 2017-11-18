@@ -18,23 +18,18 @@ abstract class Box2DComponent extends Component {
   World world;
   List<BodyComponent> bodies = new List();
 
-  ViewportTransform viewport;
+  Viewport viewport;
 
   Box2DComponent(this.dimensions,
       {int worldPoolSize: DEFAULT_WORLD_POOL_SIZE,
       int worldPoolContainerSize: DEFAULT_WORLD_POOL_CONTAINER_SIZE,
       double gravity: DEFAULT_GRAVITY,
-      velocityIterations: DEFAULT_VELOCITY_ITERATIONS,
-      int positionIterations: DEFAULT_POSITION_ITERATIONS,
+      this.velocityIterations: DEFAULT_VELOCITY_ITERATIONS,
+      this.positionIterations: DEFAULT_POSITION_ITERATIONS,
       double scale: DEFAULT_SCALE}) {
-    this.velocityIterations = velocityIterations;
-    this.positionIterations = positionIterations;
-
     this.world = new World.withPool(new Vector2(0.0, gravity),
         new DefaultWorldPool(worldPoolSize, worldPoolContainerSize));
-
-    var extents = new Vector2(dimensions.width / 2, dimensions.height / 2);
-    this.viewport = new ViewportTransform(extents, extents, scale);
+    this.viewport = new Viewport(dimensions, scale);
   }
 
   @override
@@ -64,6 +59,23 @@ abstract class Box2DComponent extends Component {
   }
 
   void initializeWorld();
+}
+
+class Viewport extends ViewportTransform {
+  Size dimensions;
+
+  double scale;
+
+  Viewport(this.dimensions, this.scale)
+      : super(new Vector2(dimensions.width / 2, dimensions.height / 2),
+            new Vector2(dimensions.width / 2, dimensions.height / 2), scale);
+
+  double alignBottom(double height) =>
+      -(dimensions.height / 2 / scale) + height;
+
+  double width(int percent) {
+    return percent * (dimensions.width / 2 / scale);
+  }
 }
 
 class BodyComponent extends Component {
@@ -135,7 +147,6 @@ class BodyComponent extends Component {
   }
 
   void drawPolygon(Canvas canvas, List<Offset> points) {
-//    print("points: $points");
     final path = new Path()..addPolygon(points, true);
     final Paint paint = new Paint()
       ..color = new Color.fromARGB(255, 255, 255, 255);

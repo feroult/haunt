@@ -28,15 +28,14 @@ class BallCage extends Box2DComponent {
   void createGround() {
     final shape = new PolygonShape();
 //    shape.radius = 2.0;
-    shape.setAsBoxXY(dimensions.width / 2 / viewport.scale, 10.0);
+    var height = 10.0;
+    shape.setAsBoxXY(viewport.width(100), height);
     final fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
     fixtureDef.friction = 1.0;
     fixtureDef.restitution = 0.0;
     final bodyDef = new BodyDef();
-//    bodyDef.position = new Vector2(dimensions.width / 2, dimensions.height / 2);
-    bodyDef.position =
-        new Vector2(0.0, -(dimensions.height / 2 / viewport.scale) + 10);
+    bodyDef.position = new Vector2(0.0, viewport.alignBottom(height));
     Body groundBody = createBody(bodyDef);
     groundBody.createFixtureFromFixtureDef(fixtureDef);
   }
