@@ -19,6 +19,14 @@ class NinjaWorld extends Box2DComponent {
   void input(double x, double y) {
     ninja.input(x, y);
   }
+
+  @override
+  void update(t) {
+    super.update(t);
+    var position = ninja.getPosition();
+    viewport.setCamera(dimensions.width / 2 + (position.x * viewport.scale),
+        viewport.center.y, viewport.scale);
+  }
 }
 
 class GroundComponent extends BodyComponent {
@@ -101,7 +109,7 @@ class NinjaComponent extends BodyComponent {
   void _createBody() {
     final shape = new CircleShape();
     shape.radius = NinjaComponent.NINJA_RADIUS;
-    shape.p.x = 0.00001;
+    shape.p.x = 0.0;
 
     final activeFixtureDef = new FixtureDef();
     activeFixtureDef.shape = shape;
@@ -111,7 +119,7 @@ class NinjaComponent extends BodyComponent {
     FixtureDef fixtureDef = activeFixtureDef;
     final activeBodyDef = new BodyDef();
     activeBodyDef.linearVelocity = new Vector2(0.0, -20.0);
-    activeBodyDef.position = new Vector2(15.0, 15.0);
+    activeBodyDef.position = new Vector2(0.0, 15.0);
     activeBodyDef.type = BodyType.DYNAMIC;
     activeBodyDef.bullet = true;
     BodyDef bodyDef = activeBodyDef;
@@ -124,5 +132,13 @@ class NinjaComponent extends BodyComponent {
     Vector2 currentForwardNormal =
         x < 500 ? new Vector2(-1.0, 0.0) : new Vector2(1.0, 0.0);
     body.applyForce(currentForwardNormal..scale(100.0), body.worldCenter);
+  }
+
+  Vector2 getPosition() {
+    Vector2 center = new Vector2.zero();
+    CircleShape circle = body.getFixtureList().getShape();
+    body.getWorldPointToOut(circle.p, center);
+//    viewport.getWorldToScreen(center, center);
+    return center;
   }
 }
