@@ -39,14 +39,14 @@ class GroundComponent extends BodyComponent {
 
   void _createBody() {
     final shape = new PolygonShape();
-    shape.setAsBoxXY(viewport.width(1.0), GroundComponent.HEIGHT);
+    shape.setAsBoxXY(viewport.width(1.0), HEIGHT);
     final fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
-    fixtureDef.friction = 0.0;
+    fixtureDef.friction = 0.5;
     fixtureDef.restitution = 0.0;
     final bodyDef = new BodyDef();
     bodyDef.position =
-        new Vector2(0.0, viewport.alignBottom(GroundComponent.HEIGHT));
+        new Vector2(0.0, viewport.alignBottom(HEIGHT));
     Body groundBody = world.createBody(bodyDef);
     groundBody.createFixtureFromFixtureDef(fixtureDef);
     this.body = groundBody;
