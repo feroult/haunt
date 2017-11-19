@@ -5,7 +5,6 @@ import 'package:flame/flame.dart';
 import 'package:flutter/painting.dart';
 
 import 'box2d_component.dart';
-import 'custom_shape.dart';
 
 class NinjaWorld extends Box2DComponent {
   NinjaComponent ninja;
@@ -103,14 +102,14 @@ class NinjaComponent extends BodyComponent {
       ..createFixtureFromFixtureDef(fixtureDef);
   }
 
-  CustomShape _createShape() {
-    final bouncingCircle = new CustomShape();
+  Shape _createShape() {
+    final bouncingCircle = new CircleShape();
     bouncingCircle.radius = NINJA_RADIUS;
     bouncingCircle.p.x = 0.00001;
     return bouncingCircle;
   }
 
-  FixtureDef _createFixture(CustomShape bouncingCircle) {
+  FixtureDef _createFixture(Shape bouncingCircle) {
     final activeFixtureDef = new FixtureDef();
     activeFixtureDef.restitution = 0.0;
     activeFixtureDef.density = 0.05;
