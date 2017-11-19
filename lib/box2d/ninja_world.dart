@@ -27,9 +27,25 @@ class NinjaWorld extends Box2DComponent {
   }
 
   void _followNinja() {
+    Vector2 temp = new Vector2.zero();
     var position = ninja.getPosition();
-    viewport.setCamera(dimensions.width / 2 + (position.x * viewport.scale),
-        viewport.center.y, viewport.scale);
+    viewport.getWorldToScreen(position, temp);
+
+    var margin = 0.25 * dimensions.width / 2;
+
+    if (temp.x < dimensions.width / 2 - margin) {
+      viewport.setCamera(
+          dimensions.width / 2 + (position.x * viewport.scale) + margin,
+          viewport.center.y,
+          viewport.scale);
+    }
+
+    if (temp.x > dimensions.width / 2 + margin) {
+      viewport.setCamera(
+          dimensions.width / 2 + (position.x * viewport.scale) - margin,
+          viewport.center.y,
+          viewport.scale);
+    }
   }
 }
 
@@ -132,17 +148,17 @@ class NinjaComponent extends BodyComponent {
       ..createFixtureFromFixtureDef(fixtureDef);
   }
 
-  void input(double x, double y) {
-    Vector2 currentForwardNormal =
-        x < 500 ? new Vector2(-1.0, 0.0) : new Vector2(1.0, 0.0);
-    body.applyForce(currentForwardNormal..scale(100.0), body.worldCenter);
-  }
-
   Vector2 getPosition() {
     Vector2 center = new Vector2.zero();
     CircleShape circle = body.getFixtureList().getShape();
     body.getWorldPointToOut(circle.p, center);
 //    viewport.getWorldToScreen(center, center);
     return center;
+  }
+
+  void input(double x, double y) {
+    Vector2 currentForwardNormal =
+        x < 500 ? new Vector2(-1.0, 0.0) : new Vector2(1.0, 0.0);
+    body.applyForce(currentForwardNormal..scale(100.0), body.worldCenter);
   }
 }
