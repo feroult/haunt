@@ -12,7 +12,6 @@ class HauntGame extends Game {
   ParallaxComponent background;
 
   NinjaWorld ninjaWorld;
-  DominoTest dominoTest;
 
   HauntGame(this.dimensions) {
     var filenames = new List<String>();
@@ -20,7 +19,6 @@ class HauntGame extends Game {
       filenames.add("layers/layer_0${i}.png");
     }
 
-    dominoTest = createDomino(dimensions);
     ninjaWorld = createBallCage(dimensions);
     background = new ParallaxComponent(dimensions, filenames);
 
@@ -51,9 +49,8 @@ class HauntGame extends Game {
     if (!background.loaded) {
       return;
     }
-    background.render(canvas);
+//    background.render(canvas);
     ninjaWorld.render(canvas);
-//    dominoTest.render(canvas);
   }
 
   @override
@@ -62,8 +59,7 @@ class HauntGame extends Game {
       return;
     }
 
-    background.update(t);
+//    background.update(t);
     ninjaWorld.update(t);
-//    dominoTest.update(t);
   }
 }

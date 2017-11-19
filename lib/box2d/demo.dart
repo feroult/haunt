@@ -73,7 +73,7 @@ class Viewport extends ViewportTransform {
   double alignBottom(double height) =>
       -(dimensions.height / 2 / scale) + height;
 
-  double width(int percent) {
+  double width(double percent) {
     return percent * (dimensions.width / 2 / scale);
   }
 }
@@ -150,6 +150,7 @@ class BodyComponent extends Component {
     final path = new Path()..addPolygon(points, true);
     final Paint paint = new Paint()
       ..color = new Color.fromARGB(255, 255, 255, 255);
-//    canvas.drawPath(path, paint);
+//      ..style = PaintingStyle.stroke;
+    canvas.drawPath(path, paint);
   }
 }

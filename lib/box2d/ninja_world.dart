@@ -22,14 +22,15 @@ class NinjaWorld extends Box2DComponent {
   void createGround() {
     var height = 7.5;
     final shape = new PolygonShape();
-    shape.setAsBoxXY(viewport.width(100), height);
+    shape.setAsBoxXY(viewport.width(1.0), height);
     final fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
-    fixtureDef.friction = 1.0;
+    fixtureDef.friction = 0.0;
     fixtureDef.restitution = 0.0;
+//    fixtureDef.filter = new Filter()..maskBits = 0x000;
     final bodyDef = new BodyDef();
     bodyDef.position = new Vector2(0.0, viewport.alignBottom(height));
-    Body groundBody = createBody(bodyDef);
+    Body groundBody = createBody(bodyDef, component: new GroundComponent());
     groundBody.createFixtureFromFixtureDef(fixtureDef);
   }
 
@@ -58,6 +59,29 @@ class NinjaWorld extends Box2DComponent {
   void input(double x, double y) {
     Vector2 currentForwardNormal = new Vector2(0.0, 5.0);
     ninja.applyForce(currentForwardNormal..scale(100.0), ninja.worldCenter);
+  }
+}
+
+class GroundComponent extends BodyComponent {
+  Image image;
+
+  GroundComponent() {
+    Flame.images.load("layers/layer_07.png").then((image) {
+      this.image = image;
+    });
+  }
+
+  @override
+  void drawPolygon(Canvas canvas, List<Offset> points) {
+    if (image == null) {
+      return;
+    }
+    paintImage(
+        canvas: canvas,
+        image: image,
+        rect: new Rect.fromPoints(points[0], points[2]),
+        alignment: Alignment.bottomCenter,
+        fit: BoxFit.cover);
   }
 }
 
