@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flame/component.dart';
 import 'package:flame/game.dart';
 
-import 'box2d/domino_test.dart';
 import 'box2d/ninja_world.dart';
 
 class HauntGame extends Game {
@@ -19,7 +18,7 @@ class HauntGame extends Game {
       filenames.add("layers/layer_0${i}.png");
     }
 
-    ninjaWorld = createBallCage(dimensions);
+    ninjaWorld = createNinjaWorld(dimensions);
     background = new ParallaxComponent(dimensions, filenames);
 
     window.onPointerDataPacket = (packet) {
@@ -28,13 +27,7 @@ class HauntGame extends Game {
     };
   }
 
-  DominoTest createDomino(Size dimensions) {
-    var demo = new DominoTest(dimensions);
-    demo.initializeWorld();
-    return demo;
-  }
-
-  NinjaWorld createBallCage(Size dimensions) {
+  NinjaWorld createNinjaWorld(Size dimensions) {
     var demo = new NinjaWorld(dimensions);
     demo.initializeWorld();
     return demo;

@@ -4,72 +4,53 @@ import 'package:box2d/box2d.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/painting.dart';
 
+import 'box2d_component.dart';
 import 'custom_shape.dart';
-import 'demo.dart';
 
 class NinjaWorld extends Box2DComponent {
-  Body ninja;
-
-  static const num NINJA_RADIUS = 5.0;
+  NinjaComponent ninja;
 
   NinjaWorld(Size dimensions) : super(dimensions);
 
   void initializeWorld() {
-    createGround();
-    createNinja();
-  }
-
-  void createGround() {
-    var height = 7.5;
-    final shape = new PolygonShape();
-    shape.setAsBoxXY(viewport.width(1.0), height);
-    final fixtureDef = new FixtureDef();
-    fixtureDef.shape = shape;
-    fixtureDef.friction = 0.0;
-    fixtureDef.restitution = 0.0;
-//    fixtureDef.filter = new Filter()..maskBits = 0x000;
-    final bodyDef = new BodyDef();
-    bodyDef.position = new Vector2(0.0, viewport.alignBottom(height));
-    Body groundBody = createBody(bodyDef, component: new GroundComponent());
-    groundBody.createFixtureFromFixtureDef(fixtureDef);
-  }
-
-  void createNinja() {
-    // Create a bouncing ball.
-    final bouncingCircle = new CustomShape();
-    bouncingCircle.radius = NINJA_RADIUS;
-    bouncingCircle.p.x = 0.00001;
-
-    // Create fixture for that ball shape.
-    final activeFixtureDef = new FixtureDef();
-    activeFixtureDef.restitution = 0.0;
-    activeFixtureDef.density = 0.05;
-    activeFixtureDef.shape = bouncingCircle;
-
-    // Create the active ball body.
-    final activeBodyDef = new BodyDef();
-    activeBodyDef.linearVelocity = new Vector2(0.0, -20.0);
-    activeBodyDef.position = new Vector2(15.0, 15.0);
-    activeBodyDef.type = BodyType.DYNAMIC;
-    activeBodyDef.bullet = true;
-    ninja = createBody(activeBodyDef, component: new NinjaComponent());
-    ninja.createFixtureFromFixtureDef(activeFixtureDef);
+    add(new GroundComponent(this));
+    add(ninja = new NinjaComponent(this));
   }
 
   void input(double x, double y) {
-    Vector2 currentForwardNormal =
-        x < 500 ? new Vector2(-1.0, 0.0) : new Vector2(1.0, 0.0);
-    ninja.applyForce(currentForwardNormal..scale(100.0), ninja.worldCenter);
+    ninja.input(x, y);
   }
 }
 
 class GroundComponent extends BodyComponent {
+  static final HEIGHT = 7.5;
+
   Image image;
 
-  GroundComponent() {
+  GroundComponent(box) : super(box) {
+    _loadImage();
+    _createBody();
+  }
+
+  void _loadImage() {
     Flame.images.load("layers/layer_07.png").then((image) {
       this.image = image;
     });
+  }
+
+  void _createBody() {
+    final shape = new PolygonShape();
+    shape.setAsBoxXY(viewport.width(1.0), GroundComponent.HEIGHT);
+    final fixtureDef = new FixtureDef();
+    fixtureDef.shape = shape;
+    fixtureDef.friction = 0.0;
+    fixtureDef.restitution = 0.0;
+    final bodyDef = new BodyDef();
+    bodyDef.position =
+        new Vector2(0.0, viewport.alignBottom(GroundComponent.HEIGHT));
+    Body groundBody = world.createBody(bodyDef);
+    groundBody.createFixtureFromFixtureDef(fixtureDef);
+    this.body = groundBody;
   }
 
   @override
@@ -87,9 +68,16 @@ class GroundComponent extends BodyComponent {
 }
 
 class NinjaComponent extends BodyComponent {
+  static const num NINJA_RADIUS = 5.0;
+
   Image image;
 
-  NinjaComponent() {
+  NinjaComponent(box2d) : super(box2d) {
+    _loadImage();
+    _createBody();
+  }
+
+  void _loadImage() {
     Flame.images.load("ninja.png").then((image) {
       this.image = image;
     });
@@ -105,5 +93,43 @@ class NinjaComponent extends BodyComponent {
         image: image,
         rect: new Rect.fromCircle(center: center, radius: radius),
         fit: BoxFit.contain);
+  }
+
+  void _createBody() {
+    FixtureDef fixtureDef = _createFixture(_createShape());
+    BodyDef bodyDef = createBodyDef();
+
+    this.body = world.createBody(bodyDef)
+      ..createFixtureFromFixtureDef(fixtureDef);
+  }
+
+  CustomShape _createShape() {
+    final bouncingCircle = new CustomShape();
+    bouncingCircle.radius = NINJA_RADIUS;
+    bouncingCircle.p.x = 0.00001;
+    return bouncingCircle;
+  }
+
+  FixtureDef _createFixture(CustomShape bouncingCircle) {
+    final activeFixtureDef = new FixtureDef();
+    activeFixtureDef.restitution = 0.0;
+    activeFixtureDef.density = 0.05;
+    activeFixtureDef.shape = bouncingCircle;
+    return activeFixtureDef;
+  }
+
+  BodyDef createBodyDef() {
+    final activeBodyDef = new BodyDef();
+    activeBodyDef.linearVelocity = new Vector2(0.0, -20.0);
+    activeBodyDef.position = new Vector2(15.0, 15.0);
+    activeBodyDef.type = BodyType.DYNAMIC;
+    activeBodyDef.bullet = true;
+    return activeBodyDef;
+  }
+
+  void input(double x, double y) {
+    Vector2 currentForwardNormal =
+        x < 500 ? new Vector2(-1.0, 0.0) : new Vector2(1.0, 0.0);
+    body.applyForce(currentForwardNormal..scale(100.0), body.worldCenter);
   }
 }

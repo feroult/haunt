@@ -16,7 +16,7 @@ abstract class Box2DComponent extends Component {
   int positionIterations;
 
   World world;
-  List<BodyComponent> bodies = new List();
+  List<BodyComponent> components = new List();
 
   Viewport viewport;
 
@@ -35,27 +35,20 @@ abstract class Box2DComponent extends Component {
   @override
   void update(t) {
     world.stepDt(t, velocityIterations, positionIterations);
-    bodies.forEach((body) {
-      body.update(t);
+    components.forEach((c) {
+      c.update(t);
     });
   }
 
   @override
   void render(canvas) {
-    bodies.forEach((body) {
-      body.render(canvas);
+    components.forEach((c) {
+      c.render(canvas);
     });
   }
 
-  Body createBody(BodyDef def, {BodyComponent component}) {
-    if (component == null) {
-      component = new BodyComponent();
-    }
-    var body = world.createBody(def);
-    component.viewport = viewport;
-    component.body = body;
-    bodies.add(component);
-    return body;
+  void add(BodyComponent component) {
+    components.add(component);
   }
 
   void initializeWorld();
@@ -81,9 +74,15 @@ class Viewport extends ViewportTransform {
 class BodyComponent extends Component {
   static const MAX_POLYGON_VERTICES = 10;
 
+  Box2DComponent box;
+
   Body body;
 
-  ViewportTransform viewport;
+  BodyComponent(this.box) {}
+
+  World get world => box.world;
+
+  Viewport get viewport => box.viewport;
 
   @override
   void update(double t) {
