@@ -57,7 +57,8 @@ class NinjaWorld extends Box2DComponent {
   }
 
   void input(double x, double y) {
-    Vector2 currentForwardNormal = new Vector2(0.0, 5.0);
+    Vector2 currentForwardNormal =
+        x < 500 ? new Vector2(-1.0, 0.0) : new Vector2(1.0, 0.0);
     ninja.applyForce(currentForwardNormal..scale(100.0), ninja.worldCenter);
   }
 }
