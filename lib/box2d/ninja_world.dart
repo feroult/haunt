@@ -23,6 +23,10 @@ class NinjaWorld extends Box2DComponent {
   @override
   void update(t) {
     super.update(t);
+    _followNinja();
+  }
+
+  void _followNinja() {
     var position = ninja.getPosition();
     viewport.setCamera(dimensions.width / 2 + (position.x * viewport.scale),
         viewport.center.y, viewport.scale);
