@@ -42,11 +42,10 @@ class GroundComponent extends BodyComponent {
     shape.setAsBoxXY(viewport.width(1.0), HEIGHT);
     final fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
-    fixtureDef.friction = 0.5;
     fixtureDef.restitution = 0.0;
+    fixtureDef.friction = 0.2;
     final bodyDef = new BodyDef();
-    bodyDef.position =
-        new Vector2(0.0, viewport.alignBottom(HEIGHT));
+    bodyDef.position = new Vector2(0.0, viewport.alignBottom(HEIGHT));
     Body groundBody = world.createBody(bodyDef);
     groundBody.createFixtureFromFixtureDef(fixtureDef);
     this.body = groundBody;
@@ -83,6 +82,11 @@ class NinjaComponent extends BodyComponent {
   }
 
   @override
+  void update(double t) {
+    body.angularVelocity *= 0.9;
+  }
+
+  @override
   void renderCircle(Canvas canvas, Offset center, double radius) {
     if (image == null) {
       return;
@@ -95,35 +99,25 @@ class NinjaComponent extends BodyComponent {
   }
 
   void _createBody() {
-    FixtureDef fixtureDef = _createFixture(_createShape());
-    BodyDef bodyDef = createBodyDef();
+    final shape = new CircleShape();
+    shape.radius = NinjaComponent.NINJA_RADIUS;
+    shape.p.x = 0.00001;
 
-    this.body = world.createBody(bodyDef)
-      ..createFixtureFromFixtureDef(fixtureDef);
-  }
-
-  Shape _createShape() {
-    final bouncingCircle = new CircleShape();
-    bouncingCircle.radius = NINJA_RADIUS;
-    bouncingCircle.p.x = 0.00001;
-    return bouncingCircle;
-  }
-
-  FixtureDef _createFixture(Shape bouncingCircle) {
     final activeFixtureDef = new FixtureDef();
+    activeFixtureDef.shape = shape;
     activeFixtureDef.restitution = 0.0;
     activeFixtureDef.density = 0.05;
-    activeFixtureDef.shape = bouncingCircle;
-    return activeFixtureDef;
-  }
-
-  BodyDef createBodyDef() {
+    activeFixtureDef.friction = 0.2;
+    FixtureDef fixtureDef = activeFixtureDef;
     final activeBodyDef = new BodyDef();
     activeBodyDef.linearVelocity = new Vector2(0.0, -20.0);
     activeBodyDef.position = new Vector2(15.0, 15.0);
     activeBodyDef.type = BodyType.DYNAMIC;
     activeBodyDef.bullet = true;
-    return activeBodyDef;
+    BodyDef bodyDef = activeBodyDef;
+
+    this.body = world.createBody(bodyDef)
+      ..createFixtureFromFixtureDef(fixtureDef);
   }
 
   void input(double x, double y) {
