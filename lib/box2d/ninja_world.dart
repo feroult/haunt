@@ -27,24 +27,7 @@ class NinjaWorld extends Box2DComponent {
   }
 
   void _followNinja() {
-    cameraFollow(ninja.getPosition(), width: 0.25);
-  }
-
-  void cameraFollow(Vector2 position, {double width}) {
-    Vector2 temp = new Vector2.zero();
-    viewport.getWorldToScreen(position, temp);
-
-    var margin = width * dimensions.width / 2;
-    var focus = dimensions.width / 2 - temp.x;
-
-    if (focus.abs() > margin) {
-      viewport.setCamera(
-          dimensions.width / 2 +
-              (position.x * viewport.scale) +
-              (focus > 0 ? margin : -margin),
-          viewport.center.y,
-          viewport.scale);
-    }
+    cameraFollow(ninja, focusWidth: 0.40);
   }
 }
 
@@ -89,6 +72,11 @@ class GroundComponent extends BodyComponent {
         rect: new Rect.fromPoints(points[0], points[2]),
         alignment: Alignment.bottomCenter,
         fit: BoxFit.cover);
+  }
+
+  @override
+  Vector2 getPosition() {
+    // TODO: implement getPosition
   }
 }
 
@@ -147,11 +135,11 @@ class NinjaComponent extends BodyComponent {
       ..createFixtureFromFixtureDef(fixtureDef);
   }
 
+  @override
   Vector2 getPosition() {
     Vector2 center = new Vector2.zero();
     CircleShape circle = body.getFixtureList().getShape();
     body.getWorldPointToOut(circle.p, center);
-//    viewport.getWorldToScreen(center, center);
     return center;
   }
 

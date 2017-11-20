@@ -51,6 +51,33 @@ abstract class Box2DComponent extends Component {
     components.add(component);
   }
 
+  /**
+   * Follow the body component using sliding a focus window defined as a
+   * percentage of the total viewport.
+   *
+   * @param component to follow.
+   * @param focusWidth width percentage of the focus window. Null means no horizontal following.
+   * TODO: implement vertical following
+   */
+  void cameraFollow(BodyComponent component, {double focusWidth}) {
+    Vector2 position = component.getPosition();
+
+    Vector2 temp = new Vector2.zero();
+    viewport.getWorldToScreen(position, temp);
+
+    var margin = focusWidth / 2 * dimensions.width / 2;
+    var focus = dimensions.width / 2 - temp.x;
+
+    if (focus.abs() > margin) {
+      viewport.setCamera(
+          dimensions.width / 2 +
+              (position.x * viewport.scale) +
+              (focus > 0 ? margin : -margin),
+          viewport.center.y,
+          viewport.scale);
+    }
+  }
+
   void initializeWorld();
 }
 
@@ -71,7 +98,7 @@ class Viewport extends ViewportTransform {
   }
 }
 
-class BodyComponent extends Component {
+abstract class BodyComponent extends Component {
   static const MAX_POLYGON_VERTICES = 10;
 
   Box2DComponent box;
@@ -111,6 +138,8 @@ class BodyComponent extends Component {
       }
     }
   }
+
+  Vector2 getPosition();
 
   void _renderCircle(Canvas canvas, Fixture fixture) {
     Vector2 center = new Vector2.zero();
