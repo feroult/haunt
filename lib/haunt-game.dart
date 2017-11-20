@@ -23,6 +23,7 @@ class HauntGame extends Game {
 
     window.onPointerDataPacket = (packet) {
       var pointer = packet.data.first;
+      print("pointer: $pointer, ${pointer.pressure}, ${pointer.change}");
       input(pointer.physicalX, pointer.physicalY);
     };
   }

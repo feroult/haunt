@@ -17,6 +17,7 @@ class NinjaWorld extends Box2DComponent {
   }
 
   void input(double x, double y) {
+    print("$x, $y");
     ninja.input(x, y);
   }
 
