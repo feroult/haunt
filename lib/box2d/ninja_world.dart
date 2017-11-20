@@ -43,14 +43,14 @@ class GroundComponent extends BodyComponent {
   }
 
   void _loadImage() {
-    Flame.images.load("layers/layer_07.png").then((image) {
+    Flame.images.load("layers/layer_07_cropped.png").then((image) {
       this.image = image;
     });
   }
 
   void _createBody() {
     final shape = new PolygonShape();
-    shape.setAsBoxXY(viewport.width(1.0), HEIGHT);
+    shape.setAsBoxXY(viewport.width(100.0), HEIGHT);
     final fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
     fixtureDef.restitution = 0.0;
@@ -71,8 +71,10 @@ class GroundComponent extends BodyComponent {
         canvas: canvas,
         image: image,
         rect: new Rect.fromPoints(points[0], points[2]),
-        alignment: Alignment.bottomCenter,
-        fit: BoxFit.cover);
+//        alignment: Alignment.bottomCenter,
+        repeat: ImageRepeat.repeatX,
+//        fit: BoxFit.cover
+    );
   }
 
   @override
