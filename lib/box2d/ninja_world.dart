@@ -27,22 +27,21 @@ class NinjaWorld extends Box2DComponent {
   }
 
   void _followNinja() {
+    cameraFollow(ninja.getPosition(), width: 0.25);
+  }
+
+  void cameraFollow(Vector2 position, {double width}) {
     Vector2 temp = new Vector2.zero();
-    var position = ninja.getPosition();
     viewport.getWorldToScreen(position, temp);
 
-    var margin = 0.25 * dimensions.width / 2;
+    var margin = width * dimensions.width / 2;
+    var focus = dimensions.width / 2 - temp.x;
 
-    if (temp.x < dimensions.width / 2 - margin) {
+    if (focus.abs() > margin) {
       viewport.setCamera(
-          dimensions.width / 2 + (position.x * viewport.scale) + margin,
-          viewport.center.y,
-          viewport.scale);
-    }
-
-    if (temp.x > dimensions.width / 2 + margin) {
-      viewport.setCamera(
-          dimensions.width / 2 + (position.x * viewport.scale) - margin,
+          dimensions.width / 2 +
+              (position.x * viewport.scale) +
+              (focus > 0 ? margin : -margin),
           viewport.center.y,
           viewport.scale);
     }
