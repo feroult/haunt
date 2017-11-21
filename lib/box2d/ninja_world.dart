@@ -16,7 +16,9 @@ class NinjaWorld extends Box2DComponent {
     add(ninja = new NinjaComponent(this));
   }
 
-  void input(double x, double y) {
+  void input(PointerData pointer) {
+    var x = pointer.physicalX;
+    var y = pointer.physicalY;
     print("$x, $y");
     ninja.input(x, y);
   }
@@ -68,11 +70,11 @@ class GroundComponent extends BodyComponent {
       return;
     }
     paintImage(
-        canvas: canvas,
-        image: image,
-        rect: new Rect.fromPoints(points[0], points[2]),
+      canvas: canvas,
+      image: image,
+      rect: new Rect.fromPoints(points[0], points[2]),
 //        alignment: Alignment.bottomCenter,
-        repeat: ImageRepeat.repeatX,
+      repeat: ImageRepeat.repeatX,
 //        fit: BoxFit.cover
     );
   }
