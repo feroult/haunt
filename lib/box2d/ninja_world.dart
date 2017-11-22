@@ -1,10 +1,9 @@
 import 'dart:ui';
 
 import 'package:box2d/box2d.dart';
+import 'package:flame/box2d/box2d_component.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/painting.dart';
-
-import 'box2d_component.dart';
 
 class NinjaWorld extends Box2DComponent {
   NinjaComponent ninja;
