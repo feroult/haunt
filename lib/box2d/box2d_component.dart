@@ -9,7 +9,7 @@ abstract class Box2DComponent extends Component {
   static const double DEFAULT_GRAVITY = -10.0;
   static const int DEFAULT_VELOCITY_ITERATIONS = 10;
   static const int DEFAULT_POSITION_ITERATIONS = 10;
-  static const double DEFAULT_SCALE = 20.0;
+  static const double DEFAULT_SCALE = 8.0;
 
   Size dimensions;
   int velocityIterations;

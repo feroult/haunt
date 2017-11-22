@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:ui';
 
 import 'package:flame/component.dart';
@@ -15,8 +14,6 @@ class HauntGame extends Game {
 
   NinjaWorld ninjaWorld;
 
-  final Queue<PointerEvent> _pendingPointerEvents = new Queue<PointerEvent>();
-
   HauntGame(this.dimensions) {
     var filenames = new List<String>();
     for (var i = 1; i <= 7; i++) {
@@ -26,62 +23,20 @@ class HauntGame extends Game {
     ninjaWorld = createNinjaWorld(dimensions);
     background = new ParallaxComponent(dimensions, filenames);
 
-    final tap = new TapGestureRecognizer()
+    addGestureRecognizer(createTapRecognizer());
+  }
+
+  TapGestureRecognizer createTapRecognizer() {
+    return new TapGestureRecognizer()
       ..onTapUp = (TapUpDetails details) {
-        var globalPosition = details.globalPosition
-            .scale(window.devicePixelRatio, window.devicePixelRatio);
-        print("tap: ${globalPosition}, ratio: ${window
-            .devicePixelRatio}");
+        print("tap: ${details.globalPosition}");
       };
-
-    final drag = new ImmediateMultiDragGestureRecognizer()
-      ..onStart = (Offset offset) {
-        var handleDrag = new HandleDrag();
-        print("drag start [${handleDrag.id}: ${offset}");
-        return handleDrag;
-      };
-
-    GestureBinding.instance.pointerRouter.addGlobalRoute((PointerEvent e) {
-      if (e is PointerDownEvent) {
-        tap.addPointer(e);
-        drag.addPointer(e);
-      }
-    });
-
-//    window.onPointerDataPacket = (PointerDataPacket packet) {
-//      PointerData pointer = packet.data.first;
-//      print("pos: ${pointer.physicalX}, ${pointer.physicalY}");
-//    };
-
-//    window.onPointerDataPacket = (PointerDataPacket packet) {
-//      _pendingPointerEvents.addAll(
-//          PointerEventConverter.expand(packet.data, window.devicePixelRatio));
-//
-//      while (_pendingPointerEvents.isNotEmpty) {
-//        var event = _pendingPointerEvents.removeFirst();
-//        if (event is PointerDownEvent) {
-//          print("here");
-//          _tap.addPointer(event);
-//        }
-//      }
-//
-//
-//
-//
-////      PointerData pointer = packet.data.first;
-////      print("pointer: $pointer, ${pointer.pressure}, ${pointer.change}");
-////      input(pointer);
-//    };
   }
 
   NinjaWorld createNinjaWorld(Size dimensions) {
     var demo = new NinjaWorld(dimensions);
     demo.initializeWorld();
     return demo;
-  }
-
-  void input(PointerData pointer) {
-    ninjaWorld.input(pointer);
   }
 
   @override
@@ -111,7 +66,6 @@ class HandleDrag extends Drag {
   void update(DragUpdateDetails details) {
     print("drag update [${id}]: ${details.globalPosition}");
   }
-
 
   @override
   void cancel() {
