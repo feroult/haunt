@@ -99,7 +99,7 @@ class NinjaComponent extends BodyComponent {
 
   @override
   void update(double t) {
-    body.angularVelocity *= 0.9;
+//    body.angularVelocity *= 0.9;
   }
 
   @override
@@ -126,7 +126,7 @@ class NinjaComponent extends BodyComponent {
     activeFixtureDef.friction = 0.2;
     FixtureDef fixtureDef = activeFixtureDef;
     final activeBodyDef = new BodyDef();
-    activeBodyDef.linearVelocity = new Vector2(0.0, -20.0);
+    activeBodyDef.linearVelocity = new Vector2(0.0, 0.0);
     activeBodyDef.position = new Vector2(0.0, 15.0);
     activeBodyDef.type = BodyType.DYNAMIC;
     activeBodyDef.bullet = true;
@@ -145,8 +145,8 @@ class NinjaComponent extends BodyComponent {
   }
 
   void input(Offset position) {
-    Vector2 currentForwardNormal =
+    Vector2 force =
         position.dx < 250 ? new Vector2(-1.0, 0.0) : new Vector2(1.0, 0.0);
-    body.applyForce(currentForwardNormal..scale(100.0), body.worldCenter);
+    body.applyForceToCenter(force..scale(10000.0));
   }
 }
