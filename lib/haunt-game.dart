@@ -29,7 +29,7 @@ class HauntGame extends Game {
   TapGestureRecognizer createTapRecognizer() {
     return new TapGestureRecognizer()
       ..onTapUp = (TapUpDetails details) {
-        print("tap: ${details.globalPosition}");
+        ninjaWorld.input(details.globalPosition);
       };
   }
 

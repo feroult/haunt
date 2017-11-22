@@ -16,11 +16,8 @@ class NinjaWorld extends Box2DComponent {
     add(ninja = new NinjaComponent(this));
   }
 
-  void input(PointerData pointer) {
-    var x = pointer.physicalX;
-    var y = pointer.physicalY;
-    print("$x, $y");
-    ninja.input(x, y);
+  void input(Offset position) {
+    ninja.input(position);
   }
 
   @override
@@ -148,9 +145,9 @@ class NinjaComponent extends BodyComponent {
     return center;
   }
 
-  void input(double x, double y) {
+  void input(Offset position) {
     Vector2 currentForwardNormal =
-        x < 500 ? new Vector2(-1.0, 0.0) : new Vector2(1.0, 0.0);
+        position.dx < 250 ? new Vector2(-1.0, 0.0) : new Vector2(1.0, 0.0);
     body.applyForce(currentForwardNormal..scale(100.0), body.worldCenter);
   }
 }
