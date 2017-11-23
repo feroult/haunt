@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:box2d/box2d.dart';
 import 'package:flame/box2d/box2d_component.dart';
+import 'package:flame/component.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/painting.dart';
@@ -40,9 +41,17 @@ class GroundComponent extends BodyComponent {
 
   Image image;
 
+  ParallaxComponent parallax;
+
   GroundComponent(box) : super(box) {
+    _loadParallax();
     _loadImage();
     _createBody();
+  }
+
+  void _loadParallax() {
+    this.parallax = new ParallaxComponent(
+        viewport.dimensions, ["layers/layer_07.png"]);
   }
 
   void _loadImage() {
@@ -53,31 +62,59 @@ class GroundComponent extends BodyComponent {
 
   void _createBody() {
     final shape = new PolygonShape();
-    shape.setAsBoxXY(viewport.width(10000.0), HEIGHT);
+    shape.setAsBoxXY(100 * viewport.worldWidth(1.0) / 2, HEIGHT);
     final fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
     fixtureDef.restitution = 0.0;
     fixtureDef.friction = 0.2;
     final bodyDef = new BodyDef();
-    bodyDef.position = new Vector2(0.0, viewport.alignBottom(HEIGHT));
+    bodyDef.position = new Vector2(0.0, viewport.worldAlignBottom(HEIGHT));
     Body groundBody = world.createBody(bodyDef);
     groundBody.createFixtureFromFixtureDef(fixtureDef);
     this.body = groundBody;
   }
 
-//  @override
-//  void drawPolygon(Canvas canvas, List<Offset> points) {
-//    if (image == null) {
-//      return;
-//    }
-//    paintImage(
-//      canvas: canvas,
-//      image: image,
-//      rect: new Rect.fromPoints(points[0], points[2]),
-//      repeat: ImageRepeat.repeatX,
-//    );
-//  }
 
+  @override
+  void update(double t) {
+    parallax.update(t);
+  }
+
+  @override
+  void render(Canvas canvas) {
+    parallax.render(canvas);
+  }
+
+  @override
+  void drawPolygon(Canvas canvas, List<Offset> points) {
+    if (!parallax.loaded) {
+      return;
+    }
+    double width = viewport.worldWidth(1.0) * viewport.scale;
+
+//    print("width: $width");
+
+    double left = viewport.center[0] - width / 2;
+    double top = points[2].dy;
+    double right = viewport.center[0] + width / 2;
+    double bottom = points[0].dy;
+
+    var rect = new Rect.fromLTRB(0.0, top, width, bottom);
+//    print("rect: $rect");
+
+    final path = new Path()..addRect(rect);
+    final Paint paint = new Paint()
+      ..color = new Color.fromARGB(255, 255, 255, 255);
+//      ..style = PaintingStyle.stroke;
+//    canvas.drawPath(path, paint);
+
+    paintImage(
+        canvas: canvas,
+        image: image,
+        rect: rect,
+        fit: BoxFit.fill,
+        alignment: Alignment.center);
+  }
 }
 
 class NinjaComponent extends BodyComponent {
