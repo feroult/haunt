@@ -1,11 +1,12 @@
 import 'dart:ui';
 
 import 'package:flame/component.dart';
+import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
-import 'box2d/ninja_world.dart';
+import 'package:haunt/ninja_world.dart';
 
 class HauntGame extends Game {
   Size dimensions;
@@ -24,7 +25,7 @@ class HauntGame extends Game {
     background = new ParallaxComponent(dimensions, filenames);
 
 //    addGestureRecognizer(createTapRecognizer());
-    addGestureRecognizer(createDragRecognizer());
+    Flame.util.addGestureRecognizer(createDragRecognizer());
   }
 
   TapGestureRecognizer createTapRecognizer() {
@@ -60,7 +61,6 @@ class HauntGame extends Game {
   }
 
   GestureRecognizer createDragRecognizer() {
-
     return new ImmediateMultiDragGestureRecognizer()
       ..onStart = (Offset position) => ninjaWorld.handleDrag(position);
   }
