@@ -53,7 +53,7 @@ class GroundComponent extends BodyComponent {
 
   void _createBody() {
     final shape = new PolygonShape();
-    shape.setAsBoxXY(viewport.width(10.0), HEIGHT);
+    shape.setAsBoxXY(viewport.width(10000.0), HEIGHT);
     final fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
     fixtureDef.restitution = 0.0;
@@ -65,25 +65,19 @@ class GroundComponent extends BodyComponent {
     this.body = groundBody;
   }
 
-  @override
-  void drawPolygon(Canvas canvas, List<Offset> points) {
-    if (image == null) {
-      return;
-    }
-    paintImage(
-      canvas: canvas,
-      image: image,
-      rect: new Rect.fromPoints(points[0], points[2]),
-//        alignment: Alignment.bottomCenter,
-      repeat: ImageRepeat.repeatX,
-//        fit: BoxFit.cover
-    );
-  }
+//  @override
+//  void drawPolygon(Canvas canvas, List<Offset> points) {
+//    if (image == null) {
+//      return;
+//    }
+//    paintImage(
+//      canvas: canvas,
+//      image: image,
+//      rect: new Rect.fromPoints(points[0], points[2]),
+//      repeat: ImageRepeat.repeatX,
+//    );
+//  }
 
-  @override
-  Vector2 getPosition() {
-    // TODO: implement getPosition
-  }
 }
 
 class NinjaComponent extends BodyComponent {
@@ -141,18 +135,10 @@ class NinjaComponent extends BodyComponent {
       ..createFixtureFromFixtureDef(fixtureDef);
   }
 
-  @override
-  Vector2 getPosition() {
-    Vector2 center = new Vector2.zero();
-    CircleShape circle = body.getFixtureList().getShape();
-    body.getWorldPointToOut(circle.p, center);
-    return center;
-  }
-
   void input(Offset position) {
     Vector2 force =
         position.dx < 250 ? new Vector2(-1.0, 0.0) : new Vector2(1.0, 0.0);
-    body.applyForce(force..scale(10000.0), getPosition());
+    body.applyForce(force..scale(10000.0), center);
   }
 
   Drag handleDrag(Offset position) {
@@ -177,6 +163,6 @@ class HandleNinjaDrag extends Drag {
 
   void impulse(Offset velocity) {
     Vector2 force = new Vector2(velocity.dx, -velocity.dy)..scale(100.0);
-    ninja.body.applyLinearImpulse(force, ninja.getPosition(), true);
+    ninja.body.applyLinearImpulse(force, ninja.center, true);
   }
 }
