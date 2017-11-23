@@ -53,7 +53,7 @@ class GroundComponent extends BodyComponent {
 
   void _createBody() {
     final shape = new PolygonShape();
-    shape.setAsBoxXY(viewport.width(100.0), HEIGHT);
+    shape.setAsBoxXY(viewport.width(10.0), HEIGHT);
     final fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
     fixtureDef.restitution = 0.0;
@@ -166,9 +166,17 @@ class HandleNinjaDrag extends Drag {
   HandleNinjaDrag(this.ninja);
 
   @override
+  void update(DragUpdateDetails details) {
+    impulse(details.delta);
+  }
+
+  @override
   void end(DragEndDetails details) {
-    var velocity = details.velocity.pixelsPerSecond;
-    Vector2 force = new Vector2(velocity.dx, -velocity.dy)..scale(1000.0);
-    ninja.body.applyForce(force, ninja.getPosition());
+    impulse(details.velocity.pixelsPerSecond);
+  }
+
+  void impulse(Offset velocity) {
+    Vector2 force = new Vector2(velocity.dx, -velocity.dy)..scale(100.0);
+    ninja.body.applyLinearImpulse(force, ninja.getPosition(), true);
   }
 }
