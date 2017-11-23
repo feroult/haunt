@@ -47,8 +47,8 @@ class GroundComponent extends BodyComponent {
   }
 
   void _loadParallax() {
-    this.landscape = new ParallaxComponent(
-        viewport.dimensions, ["layers/layer_05.png", "layers/layer_06.png", "layers/layer_07.png"]);
+    this.landscape = new ParallaxComponent(viewport.dimensions,
+        ["layers/layer_05 .png", "layers/layer_06.png", "layers/layer_07.png"]);
   }
 
   void _createBody() {
@@ -69,7 +69,8 @@ class GroundComponent extends BodyComponent {
   void update(double t) {
     landscape.scrolls[0] =
         viewport.getCenterHorizontalScreenPercentage(screens: 8.0);
-    landscape.scrolls[1] = viewport.getCenterHorizontalScreenPercentage(screens: 4.0);
+    landscape.scrolls[1] =
+        viewport.getCenterHorizontalScreenPercentage(screens: 4.0);
     landscape.scrolls[2] = viewport.getCenterHorizontalScreenPercentage();
   }
 
