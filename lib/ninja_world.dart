@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:box2d/box2d.dart';
@@ -37,7 +38,7 @@ class NinjaWorld extends Box2DComponent {
 }
 
 class GroundComponent extends BodyComponent {
-  static final HEIGHT = 7.5;
+  static final HEIGHT = 8.5;
 
   ParallaxComponent landscape;
 
@@ -47,13 +48,16 @@ class GroundComponent extends BodyComponent {
   }
 
   void _loadParallax() {
-    this.landscape = new ParallaxComponent(viewport.dimensions,
-        ["layers/layer_05 .png", "layers/layer_06.png", "layers/layer_07.png"]);
+    var filenames = new List<String>();
+    for (var i = 1; i <= 7; i++) {
+      filenames.add("layers/layer_0${i}.png");
+    }
+    this.landscape = new ParallaxComponent(viewport.dimensions, filenames);
   }
 
   void _createBody() {
     final shape = new PolygonShape();
-    shape.setAsBoxXY(100000 * viewport.worldWidth(1.0) / 2, HEIGHT);
+    shape.setAsBoxXY(viewport.worldWidth(1.0 * 100000) / 2, HEIGHT);
     final fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
     fixtureDef.restitution = 0.0;
@@ -67,11 +71,16 @@ class GroundComponent extends BodyComponent {
 
   @override
   void update(double t) {
-    landscape.scrolls[0] =
-        viewport.getCenterHorizontalScreenPercentage(screens: 8.0);
-    landscape.scrolls[1] =
-        viewport.getCenterHorizontalScreenPercentage(screens: 4.0);
-    landscape.scrolls[2] = viewport.getCenterHorizontalScreenPercentage();
+    for (var i = 1; i <= 7; i++) {
+      if (i <= 2) {
+        landscape.scrolls[i - 1] = 0.0;
+        continue;
+      }
+      int screens = pow(8 - i, 3);
+      var scroll = viewport.getCenterHorizontalScreenPercentage(
+          screens: screens.toDouble());
+      landscape.scrolls[i - 1] = scroll;
+    }
   }
 
   @override
