@@ -23,7 +23,8 @@ class HauntGame extends Game {
     ninjaWorld = createNinjaWorld(dimensions);
     background = new ParallaxComponent(dimensions, filenames);
 
-    addGestureRecognizer(createTapRecognizer());
+//    addGestureRecognizer(createTapRecognizer());
+    addGestureRecognizer(createDragRecognizer());
   }
 
   TapGestureRecognizer createTapRecognizer() {
@@ -57,23 +58,10 @@ class HauntGame extends Game {
 //    background.update(t);
     ninjaWorld.update(t);
   }
-}
 
-class HandleDrag extends Drag {
-  static int counter = 0;
-  int id = counter++;
+  GestureRecognizer createDragRecognizer() {
 
-  void update(DragUpdateDetails details) {
-    print("drag update [${id}]: ${details.globalPosition}");
-  }
-
-  @override
-  void cancel() {
-    print("drag CANCELED [${id}]");
-  }
-
-  @override
-  void end(DragEndDetails details) {
-    print("drag end [${id}]: ${details.velocity}");
+    return new ImmediateMultiDragGestureRecognizer()
+      ..onStart = (Offset position) => ninjaWorld.handleDrag(position);
   }
 }

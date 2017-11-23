@@ -3,20 +3,17 @@ import 'dart:ui';
 import 'package:box2d/box2d.dart';
 import 'package:flame/box2d/box2d_component.dart';
 import 'package:flame/flame.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/painting.dart';
 
 class NinjaWorld extends Box2DComponent {
   NinjaComponent ninja;
 
-  NinjaWorld(Size dimensions) : super(dimensions);
+  NinjaWorld(Size dimensions) : super(dimensions, scale: 8.0);
 
   void initializeWorld() {
     add(new GroundComponent(this));
     add(ninja = new NinjaComponent(this));
-  }
-
-  void input(Offset position) {
-    ninja.input(position);
   }
 
   @override
@@ -26,7 +23,15 @@ class NinjaWorld extends Box2DComponent {
   }
 
   void _followNinja() {
-    cameraFollow(ninja, focusWidth: 0.40);
+    cameraFollow(ninja, horizontal: 0.4, vertical: 0.9);
+  }
+
+  void input(Offset position) {
+    ninja.input(position);
+  }
+
+  Drag handleDrag(Offset position) {
+    return ninja.handleDrag(position);
   }
 }
 
@@ -147,6 +152,23 @@ class NinjaComponent extends BodyComponent {
   void input(Offset position) {
     Vector2 force =
         position.dx < 250 ? new Vector2(-1.0, 0.0) : new Vector2(1.0, 0.0);
-    body.applyForceToCenter(force..scale(10000.0));
+    body.applyForce(force..scale(10000.0), getPosition());
+  }
+
+  Drag handleDrag(Offset position) {
+    return new HandleNinjaDrag(this);
+  }
+}
+
+class HandleNinjaDrag extends Drag {
+  NinjaComponent ninja;
+
+  HandleNinjaDrag(this.ninja);
+
+  @override
+  void end(DragEndDetails details) {
+    var velocity = details.velocity.pixelsPerSecond;
+    Vector2 force = new Vector2(velocity.dx, -velocity.dy)..scale(1000.0);
+    ninja.body.applyForce(force, ninja.getPosition());
   }
 }
