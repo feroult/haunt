@@ -5,7 +5,6 @@ import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
-
 import 'package:haunt/ninja_world.dart';
 
 class HauntGame extends Game {
