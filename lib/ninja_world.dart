@@ -39,25 +39,16 @@ class NinjaWorld extends Box2DComponent {
 class GroundComponent extends BodyComponent {
   static final HEIGHT = 7.5;
 
-  Image image;
-
-  ParallaxComponent parallax;
+  ParallaxComponent landscape;
 
   GroundComponent(box) : super(box) {
     _loadParallax();
-    _loadImage();
     _createBody();
   }
 
   void _loadParallax() {
-    this.parallax = new ParallaxComponent(
-        viewport.dimensions, ["layers/layer_06.png", "layers/layer_07.png"]);
-  }
-
-  void _loadImage() {
-    Flame.images.load("layers/layer_07_cropped.png").then((image) {
-      this.image = image;
-    });
+    this.landscape = new ParallaxComponent(
+        viewport.dimensions, ["layers/layer_05.png", "layers/layer_06.png", "layers/layer_07.png"]);
   }
 
   void _createBody() {
@@ -76,14 +67,15 @@ class GroundComponent extends BodyComponent {
 
   @override
   void update(double t) {
-    parallax.scrolls[0] =
-        viewport.getCenterHorizontalScreenPercentage(screens: 4.0);
-    parallax.scrolls[1] = viewport.getCenterHorizontalScreenPercentage();
+    landscape.scrolls[0] =
+        viewport.getCenterHorizontalScreenPercentage(screens: 8.0);
+    landscape.scrolls[1] = viewport.getCenterHorizontalScreenPercentage(screens: 4.0);
+    landscape.scrolls[2] = viewport.getCenterHorizontalScreenPercentage();
   }
 
   @override
   void render(Canvas canvas) {
-    parallax.render(canvas);
+    landscape.render(canvas);
   }
 }
 
