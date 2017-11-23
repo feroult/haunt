@@ -25,7 +25,7 @@ class NinjaWorld extends Box2DComponent {
   }
 
   void _followNinja() {
-    cameraFollow(ninja, horizontal: 0.4, vertical: 0.9);
+    cameraFollow(ninja, horizontal: 0.4);
   }
 
   void input(Offset position) {
@@ -38,7 +38,7 @@ class NinjaWorld extends Box2DComponent {
 }
 
 class GroundComponent extends BodyComponent {
-  static final HEIGHT = 8.5;
+  static final HEIGHT = 6.25;
 
   ParallaxComponent landscape;
 
