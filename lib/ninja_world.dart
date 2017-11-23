@@ -62,7 +62,7 @@ class GroundComponent extends BodyComponent {
 
   void _createBody() {
     final shape = new PolygonShape();
-    shape.setAsBoxXY(100 * viewport.worldWidth(1.0) / 2, HEIGHT);
+    shape.setAsBoxXY(10000 * viewport.worldWidth(1.0) / 2, HEIGHT);
     final fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
     fixtureDef.restitution = 0.0;
@@ -76,13 +76,7 @@ class GroundComponent extends BodyComponent {
 
   @override
   void update(double t) {
-    double x = viewport.center[0];
-    var width = viewport.dimensions.width;
-    double rest = (x - width).abs() % width;
-    double scroll = rest / width;
-    scroll = x > 0 ? scroll : 1 - scroll;
-    parallax.scrolls[0] = scroll;
-//    print("center x: $x, width: $width, scroll: $scroll");
+    parallax.scrolls[0] = viewport.centerHorizontalScreenPercentage;
   }
 
   @override
