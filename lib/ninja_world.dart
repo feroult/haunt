@@ -50,8 +50,8 @@ class GroundComponent extends BodyComponent {
   }
 
   void _loadParallax() {
-    this.parallax = new ParallaxComponent(
-        viewport.dimensions, ["layers/layer_07.png"]);
+    this.parallax =
+        new ParallaxComponent(viewport.dimensions, ["layers/layer_07.png"]);
   }
 
   void _loadImage() {
@@ -74,46 +74,20 @@ class GroundComponent extends BodyComponent {
     this.body = groundBody;
   }
 
-
   @override
   void update(double t) {
-    parallax.update(t);
+    double x = viewport.center[0];
+    var width = viewport.dimensions.width;
+    double rest = (x - width).abs() % width;
+    double scroll = rest / width;
+    scroll = x > 0 ? scroll : 1 - scroll;
+    parallax.scrolls[0] = scroll;
+//    print("center x: $x, width: $width, scroll: $scroll");
   }
 
   @override
   void render(Canvas canvas) {
     parallax.render(canvas);
-  }
-
-  @override
-  void drawPolygon(Canvas canvas, List<Offset> points) {
-    if (!parallax.loaded) {
-      return;
-    }
-    double width = viewport.worldWidth(1.0) * viewport.scale;
-
-//    print("width: $width");
-
-    double left = viewport.center[0] - width / 2;
-    double top = points[2].dy;
-    double right = viewport.center[0] + width / 2;
-    double bottom = points[0].dy;
-
-    var rect = new Rect.fromLTRB(0.0, top, width, bottom);
-//    print("rect: $rect");
-
-    final path = new Path()..addRect(rect);
-    final Paint paint = new Paint()
-      ..color = new Color.fromARGB(255, 255, 255, 255);
-//      ..style = PaintingStyle.stroke;
-//    canvas.drawPath(path, paint);
-
-    paintImage(
-        canvas: canvas,
-        image: image,
-        rect: rect,
-        fit: BoxFit.fill,
-        alignment: Alignment.center);
   }
 }
 
