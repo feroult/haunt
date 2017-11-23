@@ -50,8 +50,8 @@ class GroundComponent extends BodyComponent {
   }
 
   void _loadParallax() {
-    this.parallax =
-        new ParallaxComponent(viewport.dimensions, ["layers/layer_07.png"]);
+    this.parallax = new ParallaxComponent(
+        viewport.dimensions, ["layers/layer_06.png", "layers/layer_07.png"]);
   }
 
   void _loadImage() {
@@ -62,7 +62,7 @@ class GroundComponent extends BodyComponent {
 
   void _createBody() {
     final shape = new PolygonShape();
-    shape.setAsBoxXY(10000 * viewport.worldWidth(1.0) / 2, HEIGHT);
+    shape.setAsBoxXY(100000 * viewport.worldWidth(1.0) / 2, HEIGHT);
     final fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
     fixtureDef.restitution = 0.0;
@@ -76,7 +76,9 @@ class GroundComponent extends BodyComponent {
 
   @override
   void update(double t) {
-    parallax.scrolls[0] = viewport.centerHorizontalScreenPercentage;
+    parallax.scrolls[0] =
+        viewport.getCenterHorizontalScreenPercentage(screens: 4.0);
+    parallax.scrolls[1] = viewport.getCenterHorizontalScreenPercentage();
   }
 
   @override
