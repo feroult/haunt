@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:flame/component.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/gestures.dart';
@@ -9,8 +8,6 @@ import 'package:haunt/ninja_world.dart';
 
 class HauntGame extends Game {
   Size dimensions;
-
-  ParallaxComponent background;
 
   NinjaWorld ninjaWorld;
 
@@ -21,9 +18,6 @@ class HauntGame extends Game {
     }
 
     ninjaWorld = createNinjaWorld(dimensions);
-    background = new ParallaxComponent(dimensions, filenames);
-
-//    addGestureRecognizer(createTapRecognizer());
     Flame.util.addGestureRecognizer(createDragRecognizer());
   }
 
@@ -42,20 +36,11 @@ class HauntGame extends Game {
 
   @override
   void render(Canvas canvas) {
-    if (!background.loaded) {
-      return;
-    }
-//    background.render(canvas);
     ninjaWorld.render(canvas);
   }
 
   @override
   void update(double t) {
-    if (!background.loaded) {
-      return;
-    }
-
-//    background.update(t);
     ninjaWorld.update(t);
   }
 

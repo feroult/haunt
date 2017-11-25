@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:box2d/box2d.dart';
 import 'package:flame/box2d/box2d_component.dart';
+import 'package:flame/box2d/viewport.dart';
 import 'package:flame/component.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/gestures.dart';
@@ -14,6 +15,7 @@ class NinjaWorld extends Box2DComponent {
   NinjaWorld(Size dimensions) : super(dimensions, scale: 8.0);
 
   void initializeWorld() {
+    add(new LandscapeComponent(viewport));
     add(new GroundComponent(this));
     add(ninja = new NinjaComponent(this));
   }
@@ -37,22 +39,48 @@ class NinjaWorld extends Box2DComponent {
   }
 }
 
+class LandscapeComponent extends ParallaxComponent {
+  Viewport viewport;
+
+  LandscapeComponent(this.viewport) : super(viewport.dimensions) {
+    _loadImages();
+  }
+
+  void _loadImages() {
+    var filenames = new List<String>();
+    for (var i = 1; i <= 6; i++) {
+      filenames.add("layers/layer_0${i}.png");
+    }
+    load(filenames);
+  }
+
+  @override
+  void update(double t) {
+    if (!loaded) {
+      return;
+    }
+
+    for (var i = 1; i <= 6; i++) {
+      if (i <= 2) {
+        updateScroll(i - 1, 0.0);
+        continue;
+      }
+      int screens = pow(8 - i, 3);
+      var scroll = viewport.getCenterHorizontalScreenPercentage(
+          screens: screens.toDouble());
+      updateScroll(i - 1, scroll);
+    }
+  }
+}
+
 class GroundComponent extends BodyComponent {
   static final HEIGHT = 6.25;
 
-  ParallaxComponent landscape;
+  ParallaxRenderer parallax;
 
-  GroundComponent(box) : super(box) {
-    _loadParallax();
+  GroundComponent(Box2DComponent box) : super(box) {
+    this.parallax = new ParallaxRenderer("layers/layer_07_cropped.png");
     _createBody();
-  }
-
-  void _loadParallax() {
-    var filenames = new List<String>();
-    for (var i = 1; i <= 7; i++) {
-      filenames.add("layers/layer_0${i}.png");
-    }
-    this.landscape = new ParallaxComponent(viewport.dimensions, filenames);
   }
 
   void _createBody() {
@@ -71,21 +99,17 @@ class GroundComponent extends BodyComponent {
 
   @override
   void update(double t) {
-    for (var i = 1; i <= 7; i++) {
-      if (i <= 2) {
-        landscape.scrolls[i - 1] = 0.0;
-        continue;
-      }
-      int screens = pow(8 - i, 3);
-      var scroll = viewport.getCenterHorizontalScreenPercentage(
-          screens: screens.toDouble());
-      landscape.scrolls[i - 1] = scroll;
-    }
+    parallax.scroll = viewport.getCenterHorizontalScreenPercentage();
   }
 
   @override
-  void render(Canvas canvas) {
-    landscape.render(canvas);
+  void renderPolygon(Canvas canvas, List<Offset> points) {
+    var left = 0.0;
+    var top = points[2].dy;
+    var right = viewport.dimensions.width;
+    var bottom = points[0].dy;
+    var rect = new Rect.fromLTRB(left, top, right, bottom);
+    parallax.render(canvas, rect);
   }
 }
 
