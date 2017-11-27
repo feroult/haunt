@@ -62,7 +62,7 @@ class LandscapeComponent extends ParallaxComponent {
 
     for (var i = 1; i <= 6; i++) {
       if (i <= 2) {
-        updateScroll(i - 1, 0.0);
+        updateScroll(i - 1, 0.5);
         continue;
       }
       int screens = pow(8 - i, 3);
@@ -74,7 +74,7 @@ class LandscapeComponent extends ParallaxComponent {
 }
 
 class GroundComponent extends BodyComponent {
-  static final HEIGHT = 6.25;
+  static final HEIGHT = 6.20;
 
   ParallaxRenderer parallax;
 
@@ -88,6 +88,7 @@ class GroundComponent extends BodyComponent {
     shape.setAsBoxXY(viewport.worldWidth(1.0 * 100000) / 2, HEIGHT);
     final fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
+
     fixtureDef.restitution = 0.0;
     fixtureDef.friction = 0.2;
     final bodyDef = new BodyDef();
@@ -99,11 +100,26 @@ class GroundComponent extends BodyComponent {
 
   @override
   void update(double t) {
-    parallax.scroll = viewport.getCenterHorizontalScreenPercentage();
+    if (!parallax.loaded) {
+      return;
+    }
+
+    var screens = parallax.image.width /
+        viewport.dimensions.width /
+        window.devicePixelRatio;
+
+//    print("x: ${viewport.dimensions.width}, ${parallax.image.width}");
+
+    parallax.scroll =
+        viewport.getCenterHorizontalScreenPercentage(screens: screens);
   }
 
   @override
   void renderPolygon(Canvas canvas, List<Offset> points) {
+    if (!parallax.loaded) {
+      return;
+    }
+
     var left = 0.0;
     var top = points[2].dy;
     var right = viewport.dimensions.width;
@@ -132,6 +148,7 @@ class NinjaComponent extends BodyComponent {
   @override
   void update(double t) {
 //    body.angularVelocity *= 0.9;
+//    print("velocity: ${body.angularVelocity}");
   }
 
   @override
@@ -158,7 +175,7 @@ class NinjaComponent extends BodyComponent {
     activeFixtureDef.friction = 0.2;
     FixtureDef fixtureDef = activeFixtureDef;
     final activeBodyDef = new BodyDef();
-    activeBodyDef.linearVelocity = new Vector2(0.0, 0.0);
+    activeBodyDef.linearVelocity = new Vector2(20.0, 0.0);
     activeBodyDef.position = new Vector2(0.0, 15.0);
     activeBodyDef.type = BodyType.DYNAMIC;
     activeBodyDef.bullet = true;

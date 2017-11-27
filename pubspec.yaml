@@ -16,6 +16,7 @@ flutter:
   assets:
     - assets/images/ninja.png
     - assets/images/layers/layer_07_cropped.png
+    - assets/images/layers/layer_07_cropped_mark.png
     - assets/images/layers/layer_01.png
     - assets/images/layers/layer_02.png
     - assets/images/layers/layer_03.png
