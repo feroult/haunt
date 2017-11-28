@@ -30,8 +30,8 @@ class NinjaWorld extends Box2DComponent {
     cameraFollow(ninja, horizontal: 0.4);
   }
 
-  void input(Offset position) {
-    ninja.input(position);
+  void handleTap(Offset position) {
+    ninja.stop();
   }
 
   Drag handleDrag(Offset position) {
@@ -132,34 +132,48 @@ class GroundComponent extends BodyComponent {
 class NinjaComponent extends BodyComponent {
   static const num NINJA_RADIUS = 5.0;
 
-  Image image;
+  ImagesLoader images = new ImagesLoader();
+
+  bool idle;
+
+  bool forward;
+
+  bool jumping;
 
   NinjaComponent(box2d) : super(box2d) {
-    _loadImage();
+    _loadImages();
     _createBody();
   }
 
-  void _loadImage() {
-    Flame.images.load("ninja.png").then((image) {
-      this.image = image;
-    });
+  void _loadImages() {
+    for (int i = 0; i < 10; i++) {
+      images.load("run-${i}", "ninja/run-00${i}.png");
+      images.load("idle-${i}", "ninja/idle-00${i}.png");
+      images.load("jump-${i}", "ninja/jump-00${i}.png");
+      images.load("glide-${i}", "ninja/glide-00${i}.png");
+    }
   }
 
   @override
   void update(double t) {
-//    body.angularVelocity *= 0.9;
-//    print("velocity: ${body.angularVelocity}");
+    this.idle = body.linearVelocity.x == 0.0;
+    this.forward = body.linearVelocity.x >= 0.0;
+    this.jumping = body.getContactList() == null;
   }
 
   @override
   void renderCircle(Canvas canvas, Offset center, double radius) {
-    if (image == null) {
+    if (images.isLoading) {
       return;
     }
+
     paintImage(
         canvas: canvas,
-        image: image,
+        image: this.jumping
+            ? images.get("glide-0")
+            : this.idle ? images.get("idle-0") : images.get("run-0"),
         rect: new Rect.fromCircle(center: center, radius: radius),
+        flipHorizontally: !this.forward,
         fit: BoxFit.contain);
   }
 
@@ -175,7 +189,7 @@ class NinjaComponent extends BodyComponent {
     activeFixtureDef.friction = 0.2;
     FixtureDef fixtureDef = activeFixtureDef;
     final activeBodyDef = new BodyDef();
-    activeBodyDef.linearVelocity = new Vector2(20.0, 0.0);
+    activeBodyDef.linearVelocity = new Vector2(0.0, 0.0);
     activeBodyDef.position = new Vector2(0.0, 15.0);
     activeBodyDef.type = BodyType.DYNAMIC;
     activeBodyDef.bullet = true;
@@ -193,6 +207,11 @@ class NinjaComponent extends BodyComponent {
 
   Drag handleDrag(Offset position) {
     return new HandleNinjaDrag(this);
+  }
+
+  void stop() {
+    body.linearVelocity = new Vector2(0.0, 0.0);
+    body.angularVelocity = 0.0;
   }
 }
 
@@ -215,4 +234,22 @@ class HandleNinjaDrag extends Drag {
     Vector2 force = new Vector2(velocity.dx, -velocity.dy)..scale(100.0);
     ninja.body.applyLinearImpulse(force, ninja.center, true);
   }
+}
+
+class ImagesLoader {
+  Map<String, Image> images = new Map();
+
+  int loading = 0;
+
+  void load(String key, String filename) {
+    loading++;
+    Flame.images.load(filename).then((image) {
+      images[key] = image;
+      loading--;
+    });
+  }
+
+  bool get isLoading => loading != 0;
+
+  get(String key) => images[key];
 }

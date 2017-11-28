@@ -19,13 +19,7 @@ class HauntGame extends Game {
 
     ninjaWorld = createNinjaWorld(dimensions);
     Flame.util.addGestureRecognizer(createDragRecognizer());
-  }
-
-  TapGestureRecognizer createTapRecognizer() {
-    return new TapGestureRecognizer()
-      ..onTapUp = (TapUpDetails details) {
-        ninjaWorld.input(details.globalPosition);
-      };
+    Flame.util.addGestureRecognizer(createTapRecognizer());
   }
 
   NinjaWorld createNinjaWorld(Size dimensions) {
@@ -47,5 +41,12 @@ class HauntGame extends Game {
   GestureRecognizer createDragRecognizer() {
     return new ImmediateMultiDragGestureRecognizer()
       ..onStart = (Offset position) => ninjaWorld.handleDrag(position);
+  }
+
+  TapGestureRecognizer createTapRecognizer() {
+    return new TapGestureRecognizer()
+      ..onTapUp = (TapUpDetails details) {
+        ninjaWorld.handleTap(details.globalPosition);
+      };
   }
 }
