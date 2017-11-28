@@ -15,6 +15,16 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/ninja.png
+    - assets/images/ninja/run-000.png
+    - assets/images/ninja/run-001.png
+    - assets/images/ninja/run-002.png
+    - assets/images/ninja/run-003.png
+    - assets/images/ninja/run-004.png
+    - assets/images/ninja/run-005.png
+    - assets/images/ninja/run-006.png
+    - assets/images/ninja/run-007.png
+    - assets/images/ninja/run-008.png
+    - assets/images/ninja/run-009.png
     - assets/images/layers/layer_07_cropped.png
     - assets/images/layers/layer_07_cropped_mark.png
     - assets/images/layers/layer_01.png
