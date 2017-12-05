@@ -15,7 +15,7 @@ class NinjaWorld extends Box2DComponent {
   NinjaWorld() : super(scale: 8.0);
 
   void initializeWorld() {
-    add(new LandscapeComponent(viewport));
+    add(new BackgroundComponent(viewport));
     add(new GroundComponent(this));
     add(ninja = new NinjaComponent(this));
   }
@@ -35,10 +35,10 @@ class NinjaWorld extends Box2DComponent {
   }
 }
 
-class LandscapeComponent extends ParallaxComponent {
+class BackgroundComponent extends ParallaxComponent {
   Viewport viewport;
 
-  LandscapeComponent(this.viewport) : super(viewport.size) {
+  BackgroundComponent(this.viewport) {
     _loadImages();
   }
 
@@ -81,14 +81,14 @@ class GroundComponent extends BodyComponent {
 
   void _createBody() {
     final shape = new PolygonShape();
-    shape.setAsBoxXY(viewport.worldWidth(1.0 * 100000) / 2, HEIGHT);
+    shape.setAsBoxXY(100000.0, HEIGHT);
     final fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
 
     fixtureDef.restitution = 0.0;
     fixtureDef.friction = 0.2;
     final bodyDef = new BodyDef();
-    bodyDef.position = new Vector2(0.0, viewport.worldAlignBottom(HEIGHT));
+    bodyDef.position = new Vector2(0.0, -16.0);
     Body groundBody = world.createBody(bodyDef);
     groundBody.createFixtureFromFixtureDef(fixtureDef);
     this.body = groundBody;
@@ -100,10 +100,9 @@ class GroundComponent extends BodyComponent {
       return;
     }
 
+    // TODO: abstract this
     var screens =
         parallax.image.width / viewport.size.width / window.devicePixelRatio;
-
-//    print("x: ${viewport.dimensions.width}, ${parallax.image.width}");
 
     parallax.scroll =
         viewport.getCenterHorizontalScreenPercentage(screens: screens);
