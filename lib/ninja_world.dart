@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:box2d/box2d.dart';
 import 'package:flame/box2d/box2d_component.dart';
 import 'package:flame/box2d/viewport.dart';
-import 'package:flame/component.dart';
+import 'package:flame/components/parallax_component.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/painting.dart';
@@ -26,6 +26,11 @@ class NinjaWorld extends Box2DComponent {
     _followNinja();
   }
 
+  @override
+  void resize(Size size) {
+    viewport.resize(size);
+  }
+
   void _followNinja() {
     cameraFollow(ninja, horizontal: 0.4);
   }
@@ -42,7 +47,7 @@ class NinjaWorld extends Box2DComponent {
 class LandscapeComponent extends ParallaxComponent {
   Viewport viewport;
 
-  LandscapeComponent(this.viewport) : super(viewport.dimensions) {
+  LandscapeComponent(this.viewport) : super(viewport.size) {
     _loadImages();
   }
 
@@ -56,7 +61,7 @@ class LandscapeComponent extends ParallaxComponent {
 
   @override
   void update(double t) {
-    if (!loaded) {
+    if (!loaded()) {
       return;
     }
 
@@ -100,13 +105,12 @@ class GroundComponent extends BodyComponent {
 
   @override
   void update(double t) {
-    if (!parallax.loaded) {
+    if (!parallax.loaded()) {
       return;
     }
 
-    var screens = parallax.image.width /
-        viewport.dimensions.width /
-        window.devicePixelRatio;
+    var screens =
+        parallax.image.width / viewport.size.width / window.devicePixelRatio;
 
 //    print("x: ${viewport.dimensions.width}, ${parallax.image.width}");
 
@@ -116,13 +120,13 @@ class GroundComponent extends BodyComponent {
 
   @override
   void renderPolygon(Canvas canvas, List<Offset> points) {
-    if (!parallax.loaded) {
+    if (!parallax.loaded()) {
       return;
     }
 
     var left = 0.0;
     var top = points[2].dy;
-    var right = viewport.dimensions.width;
+    var right = viewport.size.width;
     var bottom = points[0].dy;
     var rect = new Rect.fromLTRB(left, top, right, bottom);
     parallax.render(canvas, rect);

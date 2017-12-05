@@ -1,15 +1,13 @@
 import 'dart:ui';
 
-import 'package:flame/component.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:haunt/ninja_world.dart';
 
-class HauntGame extends GameWidget {
+class HauntGame extends Game {
   Size dimensions;
 
   NinjaWorld ninjaWorld;
@@ -39,6 +37,11 @@ class HauntGame extends GameWidget {
   @override
   void update(double t) {
     ninjaWorld.update(t);
+  }
+
+  @override
+  void resize(Size size) {
+    ninjaWorld.resize(size);
   }
 
   GestureRecognizer createDragRecognizer() {

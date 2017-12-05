@@ -24,6 +24,6 @@ Future normalFlame() async {
 normalFlutter() async {
   Flame.initializeWidget();
   Flame.util.fullScreen();
-  var dimensions = await Flame.util.initialDimensions();
-  runApp(new HauntGame(dimensions));
+  Size dimensions = await Flame.util.initialDimensions();
+  runApp(new HauntGame(dimensions).widget);
 }
