@@ -12,19 +12,14 @@ class HauntGame extends Game {
 
   NinjaWorld ninjaWorld;
 
-  HauntGame(this.dimensions) {
-    var filenames = new List<String>();
-    for (var i = 1; i <= 7; i++) {
-      filenames.add("layers/layer_0${i}.png");
-    }
-
-    ninjaWorld = createNinjaWorld(dimensions);
+  HauntGame() {
+    ninjaWorld = createNinjaWorld();
     Flame.util.addGestureRecognizer(createDragRecognizer());
     Flame.util.addGestureRecognizer(createTapRecognizer());
   }
 
-  NinjaWorld createNinjaWorld(Size dimensions) {
-    var demo = new NinjaWorld(dimensions);
+  NinjaWorld createNinjaWorld() {
+    var demo = new NinjaWorld();
     demo.initializeWorld();
     return demo;
   }

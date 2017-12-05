@@ -12,7 +12,7 @@ import 'package:flutter/painting.dart';
 class NinjaWorld extends Box2DComponent {
   NinjaComponent ninja;
 
-  NinjaWorld(Size dimensions) : super(dimensions, scale: 8.0);
+  NinjaWorld() : super(scale: 8.0);
 
   void initializeWorld() {
     add(new LandscapeComponent(viewport));
@@ -23,15 +23,6 @@ class NinjaWorld extends Box2DComponent {
   @override
   void update(t) {
     super.update(t);
-    _followNinja();
-  }
-
-  @override
-  void resize(Size size) {
-    viewport.resize(size);
-  }
-
-  void _followNinja() {
     cameraFollow(ninja, horizontal: 0.4);
   }
 
