@@ -5,7 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/painting.dart';
 
 import 'characters/ninja.dart';
-import 'levels/forest.dart';
+import 'levels/demo.dart';
 
 class NinjaWorld extends Box2DComponent {
   NinjaComponent ninja;
@@ -13,8 +13,9 @@ class NinjaWorld extends Box2DComponent {
   NinjaWorld() : super(scale: 8.0);
 
   void initializeWorld() {
-    add(new BackgroundComponent(viewport));
-    add(new GroundComponent(this));
+//    add(new BackgroundComponent(viewport));
+//    add(new GroundComponent(this));
+    addAll(new DemoLevel(this).bodies);
     add(ninja = new NinjaComponent(this));
   }
 

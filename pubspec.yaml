@@ -2,6 +2,7 @@ name: haunt
 description: Haunt Flame Game
 
 dependencies:
+  screen:
   flutter:
     sdk: flutter
 
