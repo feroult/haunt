@@ -18,7 +18,7 @@ class BackgroundComponent extends ParallaxComponent {
   void _loadImages() {
     var filenames = new List<String>();
     for (var i = 1; i <= 6; i++) {
-      filenames.add("layers/layer_0${i}.png");
+      filenames.add("layers/layer_0$i.png");
     }
     load(filenames);
   }

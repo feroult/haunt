@@ -6,22 +6,25 @@ class DemoLevel {
   List<BodyComponent> _bodies = new List();
 
   DemoLevel(Box2DComponent box) {
-    _bodies.add(new WallBody(box, 1.0, 0.05, Alignment.topCenter));
-    _bodies.add(new WallBody(box, 1.0, 0.05, Alignment.bottomCenter));
-    _bodies.add(new WallBody(box, 0.05, 1.0, Alignment.centerRight));
-    _bodies.add(new WallBody(box, 0.05, 1.0, Alignment.centerLeft));
+    _bodies.add(new WallBody(box, Orientation.portrait, 1.0, 0.05, Alignment.topCenter));
+    _bodies.add(new WallBody(box, Orientation.portrait, 1.0, 0.05, Alignment.bottomCenter));
+    _bodies.add(new WallBody(box, Orientation.portrait, 0.05, 1.0, Alignment.centerRight));
+    _bodies.add(new WallBody(box, Orientation.portrait, 0.05, 1.0, Alignment.centerLeft));
   }
 
   List<BodyComponent> get bodies => _bodies;
 }
 
 class WallBody extends BodyComponent {
+  Orientation orientation;
   double widthPercent;
   double heightPercent;
   Alignment alignment;
 
+  bool first = true;
+
   WallBody(
-      Box2DComponent box, this.widthPercent, this.heightPercent, this.alignment)
+      Box2DComponent box, this.orientation, this.widthPercent, this.heightPercent, this.alignment)
       : super(box) {
     _createBody();
   }
