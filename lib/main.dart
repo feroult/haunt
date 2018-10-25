@@ -11,7 +11,7 @@ main() {
   Flame.util.fullScreen();
 
   SystemChrome
-      .setPreferredOrientations([DeviceOrientation.landscapeRight]).then((_) {
+      .setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
     runApp(new HauntGame().widget);
   });
 }

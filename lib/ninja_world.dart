@@ -10,7 +10,7 @@ import 'levels/demo.dart';
 class NinjaWorld extends Box2DComponent {
   NinjaComponent ninja;
 
-  NinjaWorld() : super(scale: 4.0);
+  NinjaWorld() : super(scale: 4.0, gravity: -10.0);
 
   void initializeWorld() {
     // add(new GroundComponent(this));
@@ -21,7 +21,7 @@ class NinjaWorld extends Box2DComponent {
   @override
   void update(t) {
     super.update(t);
-    cameraFollow(ninja, horizontal: 0.4, vertical: 0.4);
+    cameraFollow(ninja, horizontal: 0.2, vertical: 1.0);
   }
 
   void handleTap(Offset position) {

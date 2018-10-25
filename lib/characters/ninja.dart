@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:box2d_flame/box2d.dart';
 import 'package:flame/box2d/box2d_component.dart';
+import 'package:flame/flame.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/painting.dart';
 
@@ -45,11 +46,14 @@ class NinjaComponent extends BodyComponent {
       return;
     }
 
+    var timer = new DateTime.now();
+    var index = (timer.millisecond / 60 % 9).round();
+
     paintImage(
         canvas: canvas,
         image: this.jumping
-            ? images.get("glide-0")
-            : this.idle ? images.get("idle-0") : images.get("run-0"),
+            ? images.get("glide-$index")
+            : this.idle ? images.get("idle-$index") : images.get("run-$index"),
         rect: new Rect.fromCircle(center: center, radius: radius),
         flipHorizontally: !this.forward,
         fit: BoxFit.contain);
