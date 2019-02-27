@@ -29,6 +29,8 @@ class NinjaWorld extends Box2DComponent {
   }
 
   Drag handleDrag(Offset position) {
+    // remove(ninja);
+    // return null;
     return ninja.handleDrag(position);
   }
 }
