@@ -7,23 +7,16 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:haunt/ninja_world.dart';
 
-class HauntGame extends Game {
-  Size dimensions;
+class HauntGame extends GameWidget {
 
-  NinjaWorld ninjaWorld;
+  final NinjaWorld ninjaWorld = new NinjaWorld();
 
   HauntGame() {
-    ninjaWorld = createNinjaWorld();
     Flame.util.addGestureRecognizer(createDragRecognizer());
     Flame.util.addGestureRecognizer(createTapRecognizer());
+    ninjaWorld.initializeWorld();
   }
-
-  NinjaWorld createNinjaWorld() {
-    var demo = new NinjaWorld();
-    demo.initializeWorld();
-    return demo;
-  }
-
+  
   @override
   void render(Canvas canvas) {
     ninjaWorld.render(canvas);
