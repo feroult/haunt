@@ -3,15 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'haunt-game.dart';
-import 'package:screen/screen.dart';
 
-main() {
-  Screen.keepOn(true);
+main() async {
+  await Flame.util.fullScreen();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
+
   Flame.initializeWidget();
-  Flame.util.fullScreen();
-
-  SystemChrome
-      .setPreferredOrientations([DeviceOrientation.landscapeRight]).then((_) {
-    runApp(new HauntGame().widget);
-  });
+  runApp(new HauntGame().widget);
 }
