@@ -7,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:haunt/ninja_world.dart';
 
-class HauntGame extends GameWidget {
+class HauntGame extends Game {
 
   final NinjaWorld ninjaWorld = new NinjaWorld();
 
@@ -16,7 +16,7 @@ class HauntGame extends GameWidget {
     Flame.util.addGestureRecognizer(createTapRecognizer());
     ninjaWorld.initializeWorld();
   }
-  
+
   @override
   void render(Canvas canvas) {
     ninjaWorld.render(canvas);

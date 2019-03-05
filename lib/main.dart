@@ -5,6 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'haunt-game.dart';
 
 main() async {
-  await Flame.init(orientation: DeviceOrientation.landscapeRight);
+  await Flame.init(orientation: DeviceOrientation.portraitUp);
   runApp(new HauntGame());
 }

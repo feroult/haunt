@@ -8,7 +8,7 @@ import 'package:flutter/painting.dart';
 import '../utils.dart';
 
 class NinjaComponent extends BodyComponent {
-  static const num NINJA_RADIUS = 5.0;
+  static const num NINJA_RADIUS = 8.0;
 
   ImagesLoader images = new ImagesLoader();
 
@@ -34,7 +34,7 @@ class NinjaComponent extends BodyComponent {
 
   @override
   void update(double t) {
-    this.idle = body.linearVelocity.x == 0.0;
+    this.idle = body.linearVelocity.x.abs() < 0.1 && body.linearVelocity.y.abs() < 0.1;
     this.forward = body.linearVelocity.x >= 0.0;
     this.jumping = body.getContactList() == null;
   }
@@ -45,11 +45,13 @@ class NinjaComponent extends BodyComponent {
       return;
     }
 
+    var image = this.jumping
+            ? images.get("glide-0")
+            : this.idle ? images.get("idle-0") : images.get("run-0");
+
     paintImage(
         canvas: canvas,
-        image: this.jumping
-            ? images.get("glide-0")
-            : this.idle ? images.get("idle-0") : images.get("run-0"),
+        image: image,
         rect: new Rect.fromCircle(center: center, radius: radius),
         flipHorizontally: !this.forward,
         fit: BoxFit.contain);
