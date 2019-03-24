@@ -5,10 +5,8 @@ dependencies:
   screen:
   flutter:
     sdk: flutter
-
-  flame:
-      path: ../flame
-
+  flame: ^0.10.2
+      
 dev_dependencies:
   flutter_test:
     sdk: flutter
