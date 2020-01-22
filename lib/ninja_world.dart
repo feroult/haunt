@@ -13,9 +13,9 @@ class NinjaWorld extends Box2DComponent {
   NinjaWorld() : super(scale: 4.0);
 
   void initializeWorld() {
-    // add(new GroundComponent(this));
-    addAll(new DemoLevel(this).bodies);
-    add(ninja = new NinjaComponent(this));
+    // add(GroundComponent(this));
+    addAll(DemoLevel(this).bodies);
+    add(ninja = NinjaComponent(this));
   }
 
   @override
@@ -28,7 +28,11 @@ class NinjaWorld extends Box2DComponent {
     ninja.stop();
   }
 
-  Drag handleDrag(Offset position) {
-    return ninja.handleDrag(position);
+  void handleDragUpdate(DragUpdateDetails details) {
+    ninja.handleDragUpdate(details);
+  }
+
+  void handleDragEnd(DragEndDetails details) {
+    ninja.handleDragEnd(details);
   }
 }

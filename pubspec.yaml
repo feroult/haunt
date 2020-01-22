@@ -5,8 +5,8 @@ dependencies:
   screen:
   flutter:
     sdk: flutter
-  flame: ^0.10.2
-      
+  flame: ^0.17.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -43,7 +43,7 @@ flutter:
     - assets/images/ninja/glide-006.png
     - assets/images/ninja/glide-007.png
     - assets/images/ninja/glide-008.png
-    - assets/images/ninja/glide-009.png    
+    - assets/images/ninja/glide-009.png
     - assets/images/ninja/jump-000.png
     - assets/images/ninja/jump-001.png
     - assets/images/ninja/jump-002.png

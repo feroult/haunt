@@ -1,19 +1,17 @@
 import 'dart:ui';
 
-import 'package:flame/flame.dart';
+import 'package:flame/gestures.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:haunt/ninja_world.dart';
 
-class HauntGame extends Game {
+class HauntGame extends Game with TapDetector, PanDetector {
 
-  final NinjaWorld ninjaWorld = new NinjaWorld();
+  final NinjaWorld ninjaWorld = NinjaWorld();
 
   HauntGame() {
-    Flame.util.addGestureRecognizer(createDragRecognizer());
-    Flame.util.addGestureRecognizer(createTapRecognizer());
     ninjaWorld.initializeWorld();
   }
 
@@ -32,15 +30,18 @@ class HauntGame extends Game {
     ninjaWorld.resize(size);
   }
 
-  GestureRecognizer createDragRecognizer() {
-    return new ImmediateMultiDragGestureRecognizer()
-      ..onStart = (Offset position) => ninjaWorld.handleDrag(position);
+  @override
+  void onTapUp(TapUpDetails details) {
+    ninjaWorld.handleTap(details.globalPosition);
   }
 
-  TapGestureRecognizer createTapRecognizer() {
-    return new TapGestureRecognizer()
-      ..onTapUp = (TapUpDetails details) {
-        ninjaWorld.handleTap(details.globalPosition);
-      };
+  @override
+  void onPanUpdate(DragUpdateDetails details) {
+    ninjaWorld.handleDragUpdate(details);
+  }
+
+  @override
+  void onPanEnd(DragEndDetails details) {
+    ninjaWorld.handleDragEnd(details);
   }
 }
