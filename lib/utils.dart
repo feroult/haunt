@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flame/flame.dart';
 
 class ImagesLoader {
-  Map<String, Image> images = new Map();
+  Map<String, Image> images = Map();
 
   int loading = 0;
 

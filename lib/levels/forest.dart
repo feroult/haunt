@@ -16,7 +16,7 @@ class BackgroundComponent extends ParallaxComponent {
   }
 
   void _loadImages() {
-    var filenames = new List<String>();
+    var filenames = List<String>();
     for (var i = 1; i <= 6; i++) {
       filenames.add("layers/layer_0$i.png");
     }
@@ -43,25 +43,25 @@ class BackgroundComponent extends ParallaxComponent {
 }
 
 class GroundComponent extends BodyComponent {
-  static final HEIGHT = 6.20;
+  static const HEIGHT = 6.20;
 
   ParallaxRenderer parallax;
 
   GroundComponent(Box2DComponent box) : super(box) {
-    this.parallax = new ParallaxRenderer("layers/layer_07_cropped.png");
+    this.parallax = ParallaxRenderer("layers/layer_07_cropped.png");
     _createBody();
   }
 
   void _createBody() {
-    final shape = new PolygonShape();
+    final shape = PolygonShape();
     shape.setAsBoxXY(100000.0, HEIGHT);
-    final fixtureDef = new FixtureDef();
+    final fixtureDef = FixtureDef();
     fixtureDef.shape = shape;
 
     fixtureDef.restitution = 0.0;
     fixtureDef.friction = 0.2;
-    final bodyDef = new BodyDef();
-    bodyDef.position = new Vector2(0.0, -16.0);
+    final bodyDef = BodyDef();
+    bodyDef.position = Vector2(0.0, -16.0);
     Body groundBody = world.createBody(bodyDef);
     groundBody.createFixtureFromFixtureDef(fixtureDef);
     this.body = groundBody;
@@ -91,7 +91,7 @@ class GroundComponent extends BodyComponent {
     var top = points[2].dy;
     var right = viewport.size.width;
     var bottom = points[0].dy;
-    var rect = new Rect.fromLTRB(left, top, right, bottom);
+    var rect = Rect.fromLTRB(left, top, right, bottom);
     parallax.render(canvas, rect);
   }
 }

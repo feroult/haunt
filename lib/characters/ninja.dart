@@ -25,10 +25,10 @@ class NinjaComponent extends BodyComponent {
 
   void _loadImages() {
     for (int i = 0; i < 10; i++) {
-      images.load("run-${i}", "ninja/run-00${i}.png");
-      images.load("idle-${i}", "ninja/idle-00${i}.png");
-      images.load("jump-${i}", "ninja/jump-00${i}.png");
-      images.load("glide-${i}", "ninja/glide-00${i}.png");
+      images.load("run-$i", "ninja/run-00$i.png");
+      images.load("idle-$i", "ninja/idle-00$i.png");
+      images.load("jump-$i", "ninja/jump-00$i.png");
+      images.load("glide-$i", "ninja/glide-00$i.png");
     }
   }
 
@@ -85,33 +85,21 @@ class NinjaComponent extends BodyComponent {
     body.applyForce(force..scale(10000.0), center);
   }
 
-  Drag handleDrag(Offset position) {
-    return new HandleNinjaDrag(this);
-  }
-
-  void stop() {
-    body.linearVelocity = new Vector2(0.0, 0.0);
-    body.angularVelocity = 0.0;
-  }
-}
-
-class HandleNinjaDrag extends Drag {
-  NinjaComponent ninja;
-
-  HandleNinjaDrag(this.ninja);
-
-  @override
-  void update(DragUpdateDetails details) {
+  void handleDragUpdate(DragUpdateDetails details) {
     impulse(details.delta);
   }
 
-  @override
-  void end(DragEndDetails details) {
+  void handleDragEnd(DragEndDetails details) {
     impulse(details.velocity.pixelsPerSecond);
   }
 
   void impulse(Offset velocity) {
     Vector2 force = new Vector2(velocity.dx, -velocity.dy)..scale(100.0);
-    ninja.body.applyLinearImpulse(force, ninja.center, true);
+    body.applyLinearImpulse(force, center, true);
+  }
+
+  void stop() {
+    body.linearVelocity = new Vector2(0.0, 0.0);
+    body.angularVelocity = 0.0;
   }
 }
